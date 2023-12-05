@@ -145,7 +145,12 @@ export class SublinksClient {
     api:string;                 // Sublinks API URL
     lemmy:LemmyHttp             // Lemmy HTTP client for legacy API calls
     headers: { [key: string]: string } = {};
-    
+
+    /** 
+     * Client library for Sublinks and, during compatibility phase, Lemmy.
+     * 
+     * The `instance` value should be the domain of the instance without the scheme (e.g. sublinks.example.com).  HTTPS is assumed and enforced by the library.
+    */
     constructor( instance: string, options?:LemmyHttpClientConstructorOptions) {
         this.api        = `https://${instance}/sublinks-api/v1`
         this.lemmy      = new LemmyHttp(`https://${instance}`, options);
