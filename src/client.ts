@@ -162,8 +162,8 @@ export class SublinksClient {
         one-by-one, to use native calls instead of the Lemmy compatibility API.
     */
 
-    addAdmin(form: AddAdmin): Promise<AddAdminResponse> {
-        return this.lemmy.addAdmin(form);
+    addAdmin(form: AddAdmin, legacy=true): Promise<AddAdminResponse> | void {
+        if (legacy) return this.lemmy.addAdmin(form);
     }
 
     addModToCommunity(form: AddModToCommunity): Promise<AddModToCommunityResponse> {
