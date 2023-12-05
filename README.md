@@ -28,12 +28,17 @@ try {
     })
 
     client.setHeader("Authorization", `Bearer ${jwt}`)
+
+    site = await client.getSite(); 
 }
 catch (err) {
     console.log(err)
 }
 
-site = await client.getSite(); 
 if (site) console.log(site)
+
+
+if (site?.my_user) console.log("Successfully logged in");
+else console.log("Login was unsuccessful");
 ```
 
