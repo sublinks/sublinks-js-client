@@ -521,7 +521,7 @@ export class SublinksClient {
         return this.lemmy.search(form);
     }
 
-    setHeaders(headers: { [key: string]: string }) {
+    setHeaders(headers: { [key: string]: string }): void {
         this.lemmy.setHeaders(headers)
     }
     
