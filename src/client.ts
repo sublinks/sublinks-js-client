@@ -41,6 +41,7 @@ import type {
     DeleteComment,
     DeleteCommunity,
     DeleteCustomEmoji,
+    DeleteImage,
     DeletePost,
     DeletePrivateMessage,
     DistinguishComment,
@@ -131,6 +132,8 @@ import type {
     TransferCommunity,
     UpdateTotp,
     UpdateTotpResponse,
+    UploadImage,
+    UploadImageResponse,
     VerifyEmail
 } from 'lemmy-js-client'
 
@@ -141,7 +144,6 @@ import { LemmyHttp } from 'lemmy-js-client'
 export class SublinksClient {
     api:string;                 // Sublinks API URL
     lemmy:LemmyHttp             // Lemmy HTTP client for legacy API calls
-
     headers: { [key: string]: string } = {};
     
     constructor( instance: string, options?:LemmyHttpClientConstructorOptions) {
@@ -150,7 +152,7 @@ export class SublinksClient {
         this.lemmy      = new LemmyHttp(`https://${instance}`, options);
     }
 
-    
+
     /* 
         All of these methods just wrap the Lemmy JS client methods for initial compatibility. As native Sublinks API endpoints are brought online, the methods will be updated,
         one-by-one, to use native calls instead of the Lemmy compatibility API.
@@ -242,6 +244,10 @@ export class SublinksClient {
 
     deleteCustomEmoji(form: DeleteCustomEmoji): Promise<SuccessResponse> {
         return this.lemmy.deleteCustomEmoji(form);
+    }
+
+    deleteImage({ token, filename }: DeleteImage): Promise<boolean> {
+        return this.lemmy.deleteImage({token, filename});
     }
 
     deletePost(form: DeletePost): Promise<PostResponse> {
@@ -517,17 +523,20 @@ export class SublinksClient {
     }
 
     setHeaders(headers: { [key: string]: string }) {
-        this.headers = headers;
+        this.lemmy.setHeaders(headers)
     }
     
     transferCommunity(form: TransferCommunity): Promise<GetCommunityResponse> {
         return this.lemmy.transferCommunity(form);
     }
     
-
     updateTotp(form: UpdateTotp): Promise<UpdateTotpResponse> {
         return this.lemmy.updateTotp(form);
-    }    
+    }
+
+    uploadImage({ image }: UploadImage): Promise<UploadImageResponse> {
+        return this.lemmy.uploadImage({image});
+    }
 
     validateAuth(): Promise<SuccessResponse> {
         return this.lemmy.validateAuth();
