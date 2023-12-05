@@ -521,6 +521,17 @@ export class SublinksClient {
         return this.lemmy.search(form);
     }
 
+    /**
+     * Sets an individual header key to the provided value or removes the key from the headers if a value is not provided.
+     * Then calls `setHeaders` with the updated headers object.
+    */
+    setHeader(key:string, value?:string): void {
+        if (value) this.headers[key] = value;
+        else if (this.headers[key]) delete this.headers[key];
+
+        this.setHeaders(this.headers);
+    }
+
     setHeaders(headers: { [key: string]: string }): void {
         this.lemmy.setHeaders(headers)
     }

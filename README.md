@@ -27,11 +27,7 @@ try {
         password: '$uperS3cre+P@$sw0rd!'
     })
 
-    client.setHeaders(
-        {
-            "Authorization": `Bearer ${jwt}`
-        }
-    )
+    client.setHeader("Authorization", `Bearer ${jwt}`)
 }
 catch (err) {
     console.log(err)
