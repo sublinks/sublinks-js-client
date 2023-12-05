@@ -18,7 +18,7 @@ import {
     SublinksClient 
 } from 'sublinks-js-client'
 
-let site: GetSiteResponse | undefined
+let site: GetSiteResponse | undefined = undefined
 
 const client = new SublinksClient('sublinks.example.com');
 try {
