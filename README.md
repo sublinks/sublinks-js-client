@@ -21,21 +21,20 @@ import {
 let site: GetSiteResponse | undefined = undefined
 
 const client = new SublinksClient('sublinks.example.com');
+
 try {
     let { jwt }  = await client.login({
         username_or_email: 'TestUser',
         password: '$uperS3cre+P@$sw0rd!'
     })
 
-    client.setHeader("Authorization", `Bearer ${jwt}`)
+    if (jwt) client.setAuth(jwt);
 
     site = await client.getSite(); 
 }
 catch (err) {
     console.log(err)
 }
-
-if (site) console.log(site)
 
 
 if (site?.my_user) console.log("Successfully logged in");

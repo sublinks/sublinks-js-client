@@ -522,6 +522,13 @@ export class SublinksClient {
     }
 
     /**
+     * Convenience method to set the `Authorization: Bearer {token}` header
+    */
+    setAuth(jwt: string): void {
+        this.setHeader("Authorization", `Bearer ${jwt}`);
+    }
+
+    /**
      * Sets an individual header key to the provided value or removes the key from the headers if a value is not provided.
      * Then calls `setHeaders` with the updated headers object.
     */
