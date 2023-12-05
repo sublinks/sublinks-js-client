@@ -9,6 +9,7 @@ As the native Sublinks API is developed, new methods and types will be added to 
 
 This client may also gain additional convenience methods for the Lemmy JS client, so even if you're developing for that platform, you may find this library useful.
 
+Hover information is only provided for methods that are not native to `lemmy-js-client`.  e.g. `setAuth`, `setHeader`, and any future Sublinks native API methods.  Please see the `lemmy-js-client` docs if you need those.
 
 ### Example
 
