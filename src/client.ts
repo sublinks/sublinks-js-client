@@ -148,7 +148,6 @@ export class SublinksClient {
     
     constructor( instance: string, options?:LemmyHttpClientConstructorOptions) {
         this.api        = `https://${instance}/sublinks-api/v1`
-        
         this.lemmy      = new LemmyHttp(`https://${instance}`, options);
     }
 

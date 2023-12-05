@@ -12,7 +12,7 @@ This client may also gain additional convenience methods for the Lemmy JS client
 
 ### Example
 
-```
+```Javascript
 import { 
     type GetSiteResponse,
     SublinksClient 
