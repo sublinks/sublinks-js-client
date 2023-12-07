@@ -9,6 +9,7 @@
       "target": "ES2015",
       "experimentalDecorators": true,
       "strictNullChecks": true,
+      "resolveJsonModule": true,
       "moduleResolution": "Node",
       "esModuleInterop": true
     },

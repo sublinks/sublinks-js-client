@@ -1,12 +1,5 @@
-export interface LemmyHttpClientConstructorOptions {
-    fetchFunction?: typeof fetch,
-    headers?: { [key:string]: string}
-    insecure?: boolean
-}
-
-export interface HeadersObject { 
-    [key: string]: string 
-}
+import { HeadersObject} from './types/HeadersObject'
+import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
 
 import type { 
     AddAdmin,
@@ -142,22 +135,30 @@ import type {
     VerifyEmail
 } from 'lemmy-js-client'
 
-import fetch from 'cross-fetch';
+
+
 import { LemmyHttp } from 'lemmy-js-client'
+import { SublinksHttp } from './native-client'
 
 
+
+/**
+ * Universal Sublinks/Lemmy client that works with both APIs
+*/
 export class SublinksClient {
     baseURL: string             // Base URL of the API (https://instance.example.com)
+    native: SublinksHttp        // Native HTTP client
     lemmy: LemmyHttp            // Lemmy HTTP client for legacy API calls
     headers: HeadersObject      // Key-value object store for HTTP headers the client will send to the API server.
 
     /** 
      * Client library for Sublinks and, during compatibility phase, Lemmy.
      * 
-     * The `instance` value should be the domain of the instance without the scheme (e.g. sublinks.example.com).  HTTPS is assumed and enforced by the library
-     * unless `insecure` is defined and set to `true` in the `options` object.
+     * @param instance should be the domain of the instance without the scheme (e.g. sublinks.example.com).  HTTPS is assumed and enforced by the library.
+     * @param options is an object of type HttpClientConstructorOptions
     */
-    constructor( instance: string, options?: LemmyHttpClientConstructorOptions) {
+    constructor( instance: string, options?: HttpClientConstructorOptions) {
+        
         // Strip scheme and anything except the hostname if provided
         if (instance.startsWith('https://') || instance.startsWith('http://')) {
             instance = new URL(instance).host;
@@ -166,16 +167,15 @@ export class SublinksClient {
         let scheme      = options?.insecure ? 'http://' : 'https://'
         this.headers    = options?.headers || {}
         this.baseURL    = `${scheme}${instance}`
+        
         this.lemmy      = new LemmyHttp(this.baseURL, options);
+        this.native     = new SublinksHttp(this.baseURL, options)
     }
 
+    // Native Method Wrappers
 
 
-
-    /* 
-        Lemmy Compatibility Layer - with these wrappers in place, the sublinks-js-client can support both Lemmy API during the compatibility phase as well as the native 
-        Sublinks API as it is developed.
-    */
+    // Lemmy Compatibility Wrappers
 
     addAdmin(form: AddAdmin): Promise<AddAdminResponse>  {
         return this.lemmy.addAdmin(form);
