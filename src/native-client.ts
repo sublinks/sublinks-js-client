@@ -36,7 +36,7 @@ export class SublinksHttp {
      * @type BodyType is the type definition for the `form` parameter data
      * @type ResponseType is the type definition to expect from the response.
      * 
-     * @param method    HTTP verb to use
+     * @param method    HTTP method to use for the call
      * @param endpoint  The relative API endpoint (e.g. /siteinfo -> https://{instance.com}/sublinks-api/v2/siteinfo)
      * @param form      The optional body payload for non-GET requests or key/values for GET query string params
     */
