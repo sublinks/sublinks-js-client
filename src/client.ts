@@ -1,6 +1,7 @@
 import { HeadersObject} from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
 
+// Import Lemmy types
 import type { 
     AddAdmin,
     AddAdminResponse,
@@ -135,7 +136,8 @@ import type {
     VerifyEmail
 } from 'lemmy-js-client'
 
-
+// Import Native Types
+import { StatusResponse } from './types/StatusResponse'
 
 import { LemmyHttp } from 'lemmy-js-client'
 import { SublinksHttp } from './native-client'
@@ -173,9 +175,13 @@ export class SublinksClient {
     }
 
     // Native Method Wrappers
+    /** Fetches and returns the version of the native API */
+    APIVersion(): Promise<StatusResponse> {
+        return this.native.APIVersion();
+    }
 
 
-    // Lemmy Compatibility Wrappers
+    // Lemmy API Compatibility Wrappers
 
     addAdmin(form: AddAdmin): Promise<AddAdminResponse>  {
         return this.lemmy.addAdmin(form);

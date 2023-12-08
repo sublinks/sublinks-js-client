@@ -3,14 +3,12 @@ const API_VERSION = "1"
 // Import types
 import { HeadersObject} from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
-import { HTTPVerb } from './types/HTTPVerb'
+import type { HTTPVerb } from './types/HTTPVerb'
 import { StatusResponse } from './types/StatusResponse'
 
 import fetch from 'cross-fetch';
 
-/**
- * Sublinks HTTP client.  Used internally by the exported SublinksClient
-*/
+/** Sublinks HTTP client.  Used internally by SublinksClient or can be imported directly */
 export class SublinksHttp {
     baseURL: string
     headers: HeadersObject
@@ -30,17 +28,16 @@ export class SublinksHttp {
         if (options?.headers)       this.headers = options.headers
     }
 
-    /**
-     * Standard fetch wrapper for native API calls. 
+    /** Standard fetch wrapper for native API calls. 
      * 
-     * @type BodyType is the type definition for the `form` parameter data
-     * @type ResponseType is the type definition to expect from the response.
+     * FormDataType is the type definition for the `form` parameter data
+     * ResponseType is the type definition to expect from the response.
      * 
      * @param method    HTTP method to use for the call
      * @param endpoint  The relative API endpoint (e.g. /siteinfo -> https://{instance.com}/sublinks-api/v2/siteinfo)
      * @param form      The optional body payload for non-GET requests or key/values for GET query string params
     */
-    async call<BodyType extends object, ResponseType> (method: HTTPVerb, endpoint: string, form: BodyType = {} as BodyType): Promise<ResponseType> {
+    async call <FormDataType extends object, ResponseType> (method: HTTPVerb, endpoint: string, form: FormDataType = {} as FormDataType): Promise<ResponseType> {
         const url = new URL(this.baseURL);
         url.pathname += `/${endpoint}`;
         
@@ -52,7 +49,7 @@ export class SublinksHttp {
                 if (form) {
                     let keys = Object.keys(form);
                     keys.forEach((key:string) => {
-                        let value:string = (form as any)[key];
+                        let value = (form as any)[key] as string;
                         url.searchParams.set(key, value)
                     })
                 }
@@ -71,7 +68,6 @@ export class SublinksHttp {
                     },
                     body: JSON.stringify(form)
                 });
-
             }
 
             if (response.ok) {
@@ -89,17 +85,17 @@ export class SublinksHttp {
         return json;
     }
 
+    /** Example method using the `call` wrapper to call the (non-existent) version endpoint */
+    APIVersion() {
+        return this.call <object, StatusResponse> ("GET", '/version');
+    }
 
-    /**
-    * Convenience method to set the OAuth 2.0 `Authorization: Bearer {token}` header
-    */
+    /** Convenience method to set the OAuth 2.0 `Authorization: Bearer {token}` header */
     setAuthToken(token: string): void {
         this.setHeader("Authorization", `Bearer ${token}`);
     }
 
-    /**
-    * Sets an individual header key to the provided value or removes the key from the headers if a value is not provided.
-    */
+    /** Sets an individual header key to the provided value or removes the key from the headers if a value is not provided. */
      setHeader(key:string, value?:string): void {
         if (value) this.headers[key] = value;
         else if (this.headers[key]) delete this.headers[key];

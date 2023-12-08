@@ -15,7 +15,7 @@ This client may also gain additional convenience methods for the Lemmy JS client
 
 
 
-### Example
+### Example (Lemmy Compatibility API)
 
 ```Javascript
 import { 
@@ -45,6 +45,29 @@ catch (err) {
 if (site?.my_user) console.log("Successfully logged in");
 else console.log("Login was unsuccessful");
 ```
+
+### Example (Native API)
+The native API is accessed the same way as the compatibility API from the same client class. During the compatibility phase, you will need to refer to the API documentation or the client's typedocs to determine which methods belong to which API.
+
+
+
+```Javascript
+import { SublinksClient } from 'sublinks-js-client'
+
+const client = new SublinksClient('sublinks.example.com');
+
+let version = await client.APIVersion()
+
+console.log(version);
+
+/* Output
+{
+    success: true,
+    message: '1.0.0'
+}
+*/
+```
+
 
 ### Usage with Insecure HTTP
 By default, the client library will enforce HTTPS even if you specify `http://` in the instance parameter. Under 99.9% of all scenarios, you should take the hint and make sure HTTPS is enabled on your API endpoint.  However, there are times when it may be desirable/necessary to use insecure HTTP such as internal testing or working against the API via localhost.
