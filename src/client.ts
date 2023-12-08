@@ -176,8 +176,8 @@ export class SublinksClient {
 
     // Native Method Wrappers
     /** Fetches and returns the version of the native API */
-    APIVersion(): Promise<StatusResponse> {
-        return this.native.APIVersion();
+    apiVersion(): Promise<StatusResponse> {
+        return this.native.apiVersion();
     }
 
 

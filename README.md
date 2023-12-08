@@ -13,6 +13,15 @@ This client may also gain additional convenience methods for the Lemmy JS client
 **Note**: Hover information is only provided for methods that are not native to `lemmy-js-client`.  e.g. `setAuth`, `setHeader`, and any future Sublinks native API methods.  Please see the `lemmy-js-client` docs if you need those.
 
 
+### Client API Documentation
+The documentation is generated with TypeDoc and is available [here](https://participating-online.github.io/sublinks-js-client/modules.html).
+
+There are 3 ways to use the library:
+1) Use the universal client: `SublinksClient` 
+2) Use the native client: `SublinksHttp`
+3) Use the Lemmy-only client: `LemmyHttp`
+
+It is recommended to use the universal client to take advantage of the compatibility API so that applications can slowly transition to the native API as it matures.
 
 
 ### Example (Lemmy Compatibility API)

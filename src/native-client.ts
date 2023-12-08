@@ -1,9 +1,9 @@
 const API_VERSION = "1"
+export type HTTPVerb = 'GET' | 'POST' | 'PUT' | 'OPTIONS' | 'DELETE' | 'PATCH'
 
 // Import types
 import { HeadersObject} from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
-import type { HTTPVerb } from './types/HTTPVerb'
 import { StatusResponse } from './types/StatusResponse'
 
 import fetch from 'cross-fetch';
@@ -86,7 +86,7 @@ export class SublinksHttp {
     }
 
     /** Example method using the `call` wrapper to call the (non-existent) version endpoint */
-    APIVersion() {
+    apiVersion() {
         return this.call <object, StatusResponse> ("GET", '/version');
     }
 
