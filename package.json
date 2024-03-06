@@ -2,7 +2,7 @@
     "name": "sublinks-js-client",
     "version": "0.0.5",
     "description": "JavaScript/TypeScript client for Sublinks",
-    "repository": "https://github.com/sublinks/js-client",
+    "repository": "https://github.com/sublinks/sublinks-js-client",
     "license": "AGPL-3.0",
     "author": "Admiral Patrick <asimons04@gmail.com>",
     "main": "./dist/index.js",
