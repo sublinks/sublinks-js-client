@@ -1,4 +1,4 @@
-import { HeadersObject} from './types/HeadersObject'
+import { HeadersObject } from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
 
 // Import Lemmy types
