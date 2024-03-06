@@ -14,7 +14,7 @@ This client may also gain additional convenience methods for the Lemmy JS client
 
 
 ### Client API Documentation
-The documentation is generated with TypeDoc and is available [here](https://sublinks.github.io/js-client/).
+The documentation is generated with TypeDoc and is available [here](https://sublinks.org/sublinks-js-client/).
 
 There are 3 ways to use the library:
 1) Use the universal client: `SublinksClient` 
