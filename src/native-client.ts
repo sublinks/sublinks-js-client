@@ -6,6 +6,7 @@ import { HeadersObject} from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
 import { StatusResponse } from './types/StatusResponse'
 
+import { fetch } from 'cross-fetch'
 
 /** Sublinks HTTP client.  Used internally by SublinksClient or can be imported directly */
 export class SublinksHttp {
