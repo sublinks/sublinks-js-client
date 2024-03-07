@@ -125,6 +125,22 @@ const clientNoCache = new SublinksClient('sublinks.example.com', {useCache: fals
 // Use caching on this request even if caching is disabled at the client level
 const person2 = await clientNoCache.getPersonDetails({username:'bob@example.com'}, {useCache: true, cacheTime: 120})
 
+// Flush the cache
+client.cache.flush()
+
+// Delete a key from the cache
+client.cache.del('getSite')
+
+// Delete a key pattern from the cache
+client.cache.del('getModlog*')
+
+// Delete any keys from the cache older than the max age.  With no parameter specified, will use the `cacheTime` value specified at client instantiation time.  Can also specify a custom max age, in seconds, to flush keys older than that.
+
+client.cache.housekeep()    // Use class-level max age
+client.cache.housekeep(600) // Delete items older than 60 seconds
+
+
+
 ```
 
 
