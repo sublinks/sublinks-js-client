@@ -3,4 +3,5 @@ export interface HttpClientConstructorOptions {
     headers?: { [key:string]: string}
     insecure?: boolean
     cacheTime?: number
+    useCache?: boolean
 }

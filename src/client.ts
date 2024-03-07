@@ -182,7 +182,7 @@ export class SublinksClient {
         
         this.lemmy      = new LemmyHttp(this.baseURL, options);
         this.native     = new SublinksHttp(this.baseURL, options)
-        this.cache      = new FetchCache(options?.cacheTime ?? 60)
+        this.cache      = new FetchCache(options?.cacheTime ?? 60, options?.useCache ?? true)
     }
 
     // Utility Functions
@@ -394,7 +394,7 @@ export class SublinksClient {
 
     async getPersonDetails(form: GetPersonDetails = {}, cacheOptions?: CacheOptions): Promise<GetPersonDetailsResponse> {
         let cacheKey = 'getPersonDetails'
-        
+
         if (form.person_id)         cacheKey += `_person_id_${form.person_id.toString()}`
         if (form.username)          cacheKey += `_username_${form.username}`
         if (form.sort)              cacheKey += `_sort_${form.sort}`

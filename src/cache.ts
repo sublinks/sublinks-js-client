@@ -1,14 +1,6 @@
-import type { SublinksClientCache } from './types/SublinksClientCache'
 import type { CacheOptions } from './types/argumentTypes/CacheOptions'
 
-import type {
-    GetCommunityResponse,
-    GetSiteResponse
-} from 'lemmy-js-client'
-
-const defaultTTL = 60
-
-export interface FetchCacheStore {
+interface FetchCacheStore {
     
     [key: string]: {    // "site={instance}, name={community}, id={}, etc
         timestamp: number,
@@ -19,16 +11,16 @@ export interface FetchCacheStore {
 
 export class FetchCache {
     store: FetchCacheStore = {}  as FetchCacheStore
-    TTL: number
+    ttl: number
     useCache: boolean
 
     /** Fetch cache for SublinksClient
      * @param ttl           Default cache duration, in seconds, for the cache. Default is 60 seconds
-     * @param useByDefault  Whether to use the cache by default if not specified when calling get(). Default `true`
+     * @param useCache      Whether to use the cache by default if not specified. Default `true`
     */
-    constructor(ttl:number = 60, useByDefault:boolean = true) {
-        this.TTL = ttl
-        this.useCache = useByDefault
+    constructor(ttl:number = 60, useCache:boolean = true) {
+        this.ttl = ttl
+        this.useCache = useCache
    }
 
     /** Get the age of a given key. Value is in seconds
@@ -56,7 +48,7 @@ export class FetchCache {
      * @param options.invalidate Do not return a lookup from the cache 
     */
     get <ReturnType> (key: string, options:CacheOptions={}): ReturnType | undefined {
-        const duration   = options?.duration   ?? this.TTL
+        const duration   = options?.duration   ?? this.ttl
         const useCache   = options?.useCache   ?? this.useCache
         const invalidate = options?.invalidate ?? false
         
@@ -110,7 +102,7 @@ export class FetchCache {
     /** Delete any expired keys from the store. Uses the class-level TTL 
      * @param maxAge Delete any keys older than this value (in seconds)
      * **/
-    housekeep(maxAge:number = this.TTL): void {
+    housekeep(maxAge:number = this.ttl): void {
         for (let key of Object.keys(this.store)) {
             if (this.age(key) > maxAge) {
                 delete this.store[key]
