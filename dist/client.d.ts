@@ -1,7 +1,9 @@
 import { HeadersObject } from './types/HeadersObject';
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions';
 import type { AddAdmin, AddAdminResponse, AddModToCommunity, AddModToCommunityResponse, ApproveRegistrationApplication, BanFromCommunity, BanFromCommunityResponse, BanPerson, BanPersonResponse, BannedPersonsResponse, BlockCommunity, BlockCommunityResponse, BlockInstance, BlockInstanceResponse, BlockPerson, BlockPersonResponse, ChangePassword, CommentResponse, CommentReplyResponse, CommentReportResponse, CommunityResponse, CreateComment, CreateCommentLike, CreateCommentReport, CreateCommunity, CreateCustomEmoji, CreatePost, CreatePostLike, CreatePostReport, CreatePrivateMessage, CreatePrivateMessageReport, CreateSite, CustomEmojiResponse, DeleteAccount, DeleteComment, DeleteCommunity, DeleteCustomEmoji, DeleteImage, DeletePost, DeletePrivateMessage, DistinguishComment, EditComment, EditCommunity, EditCustomEmoji, EditPost, EditPrivateMessage, EditSite, FeaturePost, FollowCommunity, GenerateTotpSecretResponse, GetCaptchaResponse, GetComment, GetComments, GetCommentsResponse, GetCommunity, GetCommunityResponse, GetFederatedInstancesResponse, GetModlog, GetModlogResponse, GetPersonDetails, GetPersonDetailsResponse, GetPersonMentions, GetPersonMentionsResponse, GetPost, GetPostResponse, GetPosts, GetPostsResponse, GetPrivateMessages, GetReplies, GetRepliesResponse, GetReportCount, GetReportCountResponse, GetSiteMetadata, GetSiteMetadataResponse, GetSiteResponse, GetUnreadCountResponse, GetUnreadRegistrationApplicationCountResponse, HideCommunity, ListCommentReports, ListCommentReportsResponse, ListCommunities, ListCommunitiesResponse, ListPostReports, ListPostReportsResponse, ListPrivateMessageReports, ListPrivateMessageReportsResponse, ListRegistrationApplications, ListRegistrationApplicationsResponse, LockPost, Login, LoginResponse, LoginToken, MarkCommentReplyAsRead, MarkPersonMentionAsRead, MarkPostAsRead, MarkPrivateMessageAsRead, PasswordChangeAfterReset, PasswordReset, PersonMentionResponse, PostResponse, PostReportResponse, PrivateMessageResponse, PrivateMessagesResponse, PrivateMessageReportResponse, PurgeComment, PurgeCommunity, PurgePerson, PurgePost, Register, RegistrationApplicationResponse, RemoveComment, RemoveCommunity, RemovePost, ResolveCommentReport, ResolveObject, ResolveObjectResponse, ResolvePostReport, ResolvePrivateMessageReport, SaveComment, SavePost, SaveUserSettings, Search, SearchResponse, SiteResponse, SuccessResponse, TransferCommunity, UpdateTotp, UpdateTotpResponse, UploadImage, UploadImageResponse, VerifyEmail } from 'lemmy-js-client';
-import { StatusResponse } from './types/StatusResponse';
+import type { CacheOptions } from './types/argumentTypes/CacheOptions';
+import type { StatusResponse } from './types/StatusResponse';
+import { FetchCache } from './cache';
 import { LemmyHttp } from 'lemmy-js-client';
 import { SublinksHttp } from './native-client';
 /**
@@ -9,9 +11,11 @@ import { SublinksHttp } from './native-client';
 */
 export declare class SublinksClient {
     baseURL: string;
+    instance: string;
     native: SublinksHttp;
     lemmy: LemmyHttp;
     headers: HeadersObject;
+    cache: FetchCache;
     /**
      * Client library for Sublinks and, during compatibility phase, Lemmy.
      *
@@ -19,6 +23,8 @@ export declare class SublinksClient {
      * @param options is an object of type HttpClientConstructorOptions
     */
     constructor(instance: string, options?: HttpClientConstructorOptions);
+    /** Returns the current date/time as a Unix timestamp rounded down to nearest second. */
+    now(): number;
     /** Fetches and returns the version of the native API */
     apiVersion(): Promise<StatusResponse>;
     addAdmin(form: AddAdmin): Promise<AddAdminResponse>;
@@ -61,9 +67,9 @@ export declare class SublinksClient {
     getCaptcha(): Promise<GetCaptchaResponse>;
     getComment(form: GetComment): Promise<CommentResponse>;
     getComments(form?: GetComments): Promise<GetCommentsResponse>;
-    getCommunity(form?: GetCommunity): Promise<GetCommunityResponse>;
-    getFederatedInstances(): Promise<GetFederatedInstancesResponse>;
-    getModlog(form?: GetModlog): Promise<GetModlogResponse>;
+    getCommunity(form?: GetCommunity, cacheOptions?: CacheOptions): Promise<GetCommunityResponse>;
+    getFederatedInstances(cacheOptions?: CacheOptions): Promise<GetFederatedInstancesResponse>;
+    getModlog(form?: GetModlog, cacheOptions?: CacheOptions): Promise<GetModlogResponse>;
     getPersonDetails(form?: GetPersonDetails): Promise<GetPersonDetailsResponse>;
     getPersonMentions(form: GetPersonMentions): Promise<GetPersonMentionsResponse>;
     getPost(form?: GetPost): Promise<GetPostResponse>;
@@ -71,7 +77,10 @@ export declare class SublinksClient {
     getPrivateMessages(form: GetPrivateMessages): Promise<PrivateMessagesResponse>;
     getReplies(form: GetReplies): Promise<GetRepliesResponse>;
     getReportCount(form: GetReportCount): Promise<GetReportCountResponse>;
-    getSite(): Promise<GetSiteResponse>;
+    /** Gets the site info and optionally caches it.
+     * @param options   Options to control the cache behavior
+    **/
+    getSite(cacheOptions?: CacheOptions): Promise<GetSiteResponse>;
     getSiteMetadata(form: GetSiteMetadata): Promise<GetSiteMetadataResponse>;
     getUnreadCount(): Promise<GetUnreadCountResponse>;
     getUnreadRegistrationApplicationCount(): Promise<GetUnreadRegistrationApplicationCountResponse>;

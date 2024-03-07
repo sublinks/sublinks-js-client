@@ -1,6 +1,16 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SublinksClient = void 0;
+const cache_1 = require("./cache");
 const lemmy_js_client_1 = require("lemmy-js-client");
 const native_client_1 = require("./native-client");
 /**
@@ -14,15 +24,23 @@ class SublinksClient {
      * @param options is an object of type HttpClientConstructorOptions
     */
     constructor(instance, options) {
+        var _a;
         // Strip scheme and anything except the hostname if provided
+        this.instance = instance;
         if (instance.startsWith('https://') || instance.startsWith('http://')) {
-            instance = new URL(instance).host;
+            this.instance = new URL(instance).host;
         }
         let scheme = (options === null || options === void 0 ? void 0 : options.insecure) ? 'http://' : 'https://';
         this.headers = (options === null || options === void 0 ? void 0 : options.headers) || {};
-        this.baseURL = `${scheme}${instance}`;
+        this.baseURL = `${scheme}${this.instance}`;
         this.lemmy = new lemmy_js_client_1.LemmyHttp(this.baseURL, options);
         this.native = new native_client_1.SublinksHttp(this.baseURL, options);
+        this.cache = new cache_1.FetchCache((_a = options === null || options === void 0 ? void 0 : options.cacheTime) !== null && _a !== void 0 ? _a : 60);
+    }
+    // Utility Functions
+    /** Returns the current date/time as a Unix timestamp rounded down to nearest second. */
+    now() {
+        return Math.floor(new Date().getTime() / 1000);
     }
     // Native Method Wrappers
     /** Fetches and returns the version of the native API */
@@ -150,14 +168,44 @@ class SublinksClient {
     getComments(form = {}) {
         return this.lemmy.getComments(form);
     }
-    getCommunity(form = {}) {
-        return this.lemmy.getCommunity(form);
+    getCommunity(form = {}, cacheOptions) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!form.id && !form.name)
+                return {};
+            const cacheKey = form.id ? `getCommunity_id_${form.id.toString()}` : `getCommunity_name_${form.name}`;
+            return (_a = this.cache.get(cacheKey, cacheOptions)) !== null && _a !== void 0 ? _a : this.cache.put(cacheKey, yield this.lemmy.getCommunity(form), cacheOptions);
+        });
     }
-    getFederatedInstances() {
-        return this.lemmy.getFederatedInstances();
+    getFederatedInstances(cacheOptions) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const cacheKey = "getFederatedInstances";
+            return (_a = this.cache.get(cacheKey, cacheOptions)) !== null && _a !== void 0 ? _a : this.cache.put(cacheKey, yield this.lemmy.getFederatedInstances(), cacheOptions);
+        });
     }
-    getModlog(form = {}) {
-        return this.lemmy.getModlog(form);
+    getModlog(form = {}, cacheOptions) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            let cacheKey = 'getModlog';
+            if (form.mod_person_id)
+                cacheKey += `_mod_person_id_${form.mod_person_id.toString()}`;
+            if (form.community_id)
+                cacheKey += `_community_id_${form.community_id.toString()}`;
+            if (form.page)
+                cacheKey += `_page_${form.page.toString()}`;
+            if (form.limit)
+                cacheKey += `_limit_${form.limit.toString()}`;
+            if (form.type_)
+                cacheKey += `_type_${form.type_}`;
+            if (form.other_person_id)
+                cacheKey += `_other_person_id_${form.other_person_id.toString()}`;
+            if (form.post_id)
+                cacheKey += `_post_id_${form.post_id.toString()}`;
+            if (form.comment_id)
+                cacheKey += `_comment_id_${form.comment_id.toString()}`;
+            return (_a = this.cache.get(cacheKey, cacheOptions)) !== null && _a !== void 0 ? _a : this.cache.put(cacheKey, yield this.lemmy.getModlog(form), cacheOptions);
+        });
     }
     getPersonDetails(form = {}) {
         return this.lemmy.getPersonDetails(form);
@@ -180,8 +228,14 @@ class SublinksClient {
     getReportCount(form) {
         return this.lemmy.getReportCount(form);
     }
-    getSite() {
-        return this.lemmy.getSite();
+    /** Gets the site info and optionally caches it.
+     * @param options   Options to control the cache behavior
+    **/
+    getSite(cacheOptions) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            return (_a = this.cache.get('getSite', cacheOptions)) !== null && _a !== void 0 ? _a : this.cache.put('getSite', yield this.lemmy.getSite(), cacheOptions);
+        });
     }
     getSiteMetadata(form) {
         return this.lemmy.getSiteMetadata(form);

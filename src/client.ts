@@ -136,9 +136,15 @@ import type {
     VerifyEmail
 } from 'lemmy-js-client'
 
-// Import Native Types
-import { StatusResponse } from './types/StatusResponse'
 
+
+
+// Import Native Types
+import type { CacheOptions } from './types/argumentTypes/CacheOptions'
+import type { StatusResponse } from './types/StatusResponse'
+import type { SublinksClientCache } from './types/SublinksClientCache'
+
+import { FetchCache } from './cache'
 import { LemmyHttp } from 'lemmy-js-client'
 import { SublinksHttp } from './native-client'
 
@@ -149,9 +155,11 @@ import { SublinksHttp } from './native-client'
 */
 export class SublinksClient {
     baseURL: string             // Base URL of the API (https://instance.example.com)
+    instance: string
     native: SublinksHttp        // Native HTTP client
     lemmy: LemmyHttp            // Lemmy HTTP client for legacy API calls
     headers: HeadersObject      // Key-value object store for HTTP headers the client will send to the API server.
+    cache: FetchCache           
 
     /** 
      * Client library for Sublinks and, during compatibility phase, Lemmy.
@@ -162,16 +170,25 @@ export class SublinksClient {
     constructor( instance: string, options?: HttpClientConstructorOptions) {
         
         // Strip scheme and anything except the hostname if provided
+        this.instance = instance
+        
         if (instance.startsWith('https://') || instance.startsWith('http://')) {
-            instance = new URL(instance).host;
+            this.instance = new URL(instance).host;
         }
         
         let scheme      = options?.insecure ? 'http://' : 'https://'
         this.headers    = options?.headers || {}
-        this.baseURL    = `${scheme}${instance}`
+        this.baseURL    = `${scheme}${this.instance}`
         
         this.lemmy      = new LemmyHttp(this.baseURL, options);
         this.native     = new SublinksHttp(this.baseURL, options)
+        this.cache      = new FetchCache(options?.cacheTime ?? 60)
+    }
+
+    // Utility Functions
+    /** Returns the current date/time as a Unix timestamp rounded down to nearest second. */
+    now(): number {
+        return Math.floor(new Date().getTime()/1000)
     }
 
     // Native Method Wrappers
@@ -343,20 +360,52 @@ export class SublinksClient {
         return this.lemmy.getComments(form);
     }
     
-    getCommunity(form: GetCommunity = {}):Promise<GetCommunityResponse> {
-        return this.lemmy.getCommunity(form);
+    async getCommunity(form: GetCommunity = {}, cacheOptions?: CacheOptions):Promise<GetCommunityResponse> {
+        if (!form.id && !form.name) return {} as GetCommunityResponse
+
+        const cacheKey = form.id ? `getCommunity_id_${form.id.toString()}` : `getCommunity_name_${form.name}`
+        return this.cache.get<GetCommunityResponse>(cacheKey, cacheOptions) 
+            ?? this.cache.put<GetCommunityResponse>(cacheKey, await this.lemmy.getCommunity(form), cacheOptions)
     }
 
-    getFederatedInstances(): Promise<GetFederatedInstancesResponse> {
-        return this.lemmy.getFederatedInstances();
+    async getFederatedInstances(cacheOptions?: CacheOptions): Promise<GetFederatedInstancesResponse> {
+        const cacheKey = "getFederatedInstances"
+        
+        return this.cache.get<GetFederatedInstancesResponse>(cacheKey, cacheOptions) 
+            ?? this.cache.put<GetFederatedInstancesResponse>(cacheKey, await this.lemmy.getFederatedInstances(), cacheOptions)
     }
 
-    getModlog(form: GetModlog = {}): Promise<GetModlogResponse> {
-        return this.lemmy.getModlog(form);
+    async getModlog(form: GetModlog = {}, cacheOptions?: CacheOptions): Promise<GetModlogResponse> {
+        let cacheKey = 'getModlog'
+        
+        if (form.mod_person_id)     cacheKey += `_mod_person_id_${form.mod_person_id.toString()}`
+        if (form.community_id)      cacheKey += `_community_id_${form.community_id.toString()}`
+        if (form.page)              cacheKey += `_page_${form.page.toString()}`
+        if (form.limit)             cacheKey += `_limit_${form.limit.toString()}`
+        if (form.type_)             cacheKey += `_type_${form.type_}`
+        if (form.other_person_id)   cacheKey += `_other_person_id_${form.other_person_id.toString()}`
+        if (form.post_id)           cacheKey += `_post_id_${form.post_id.toString()}`
+        if (form.comment_id)        cacheKey += `_comment_id_${form.comment_id.toString()}`
+        
+        return this.cache.get<GetModlogResponse>(cacheKey, cacheOptions) 
+            ?? this.cache.put<GetModlogResponse>(cacheKey, await this.lemmy.getModlog(form), cacheOptions)
+        
     }
 
-    getPersonDetails(form: GetPersonDetails = {}): Promise<GetPersonDetailsResponse> {
-        return this.lemmy.getPersonDetails(form);
+    async getPersonDetails(form: GetPersonDetails = {}, cacheOptions?: CacheOptions): Promise<GetPersonDetailsResponse> {
+        let cacheKey = 'getPersonDetails'
+        
+        if (form.person_id)         cacheKey += `_person_id_${form.person_id.toString()}`
+        if (form.username)          cacheKey += `_username_${form.username}`
+        if (form.sort)              cacheKey += `_sort_${form.sort}`
+        if (form.page)              cacheKey += `_page_${form.page.toString()}`
+        if (form.limit)             cacheKey += `_limit_${form.limit.toString()}`
+        if (form.community_id)      cacheKey += `_community_id_${form.community_id.toString()}`
+        if (form.saved_only)        cacheKey += `_saved_only`
+        
+        return this.cache.get<GetPersonDetailsResponse>(cacheKey, cacheOptions) 
+            ?? this.cache.put<GetPersonDetailsResponse>(cacheKey, await this.lemmy.getPersonDetails(form), cacheOptions)
+
     }
 
     getPersonMentions(form: GetPersonMentions): Promise<GetPersonMentionsResponse> {
@@ -383,8 +432,12 @@ export class SublinksClient {
         return this.lemmy.getReportCount(form);
     }
 
-    getSite(): Promise<GetSiteResponse> {
-        return this.lemmy.getSite();
+    /** Gets the site info and optionally caches it. 
+     * @param options   Options to control the cache behavior
+    **/
+    async getSite(cacheOptions?: CacheOptions): Promise<GetSiteResponse> {
+        return this.cache.get<GetSiteResponse>('getSite', cacheOptions) 
+            ?? this.cache.put<GetSiteResponse>('getSite', await this.lemmy.getSite(), cacheOptions)
     }
 
     getSiteMetadata(form: GetSiteMetadata): Promise<GetSiteMetadataResponse> {
