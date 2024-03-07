@@ -1,4 +1,5 @@
 // Export native types
+export { CacheOptions } from './types/argumentTypes/CacheOptions'
 export { HeadersObject } from './types/HeadersObject'
 export { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
 export { StatusResponse } from './types/StatusResponse'

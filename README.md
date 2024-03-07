@@ -77,6 +77,57 @@ console.log(version);
 */
 ```
 
+### Caching
+By default, certain getters cache responses from the API.  This caching is, optinally, performed transparently when calling the following methods.  
+
+- getCommunity
+- getFederatedInstances
+- getModlog
+- getPersonDetails
+- getSite
+
+The client class can globally enable or disable caching, and each of the above methods can also adjust cache options individually by specifying an additional config object, `cacheOptions` to those methods.
+
+```Javascript
+interface CacheOptions {
+    duration?: number,      // Number of seconds the cached item should be considered valid
+    invalidate?: boolean,   // Perofrm a fresh lookup from the API and store/return the result
+    useCache?: boolean      // True (default) uses the cache. False to not store API results in cache.
+}
+
+```
+
+
+#### Example
+```Javascript
+import { SublinksClient } from 'sublinks-js-client'
+
+// Initialize the client with a default cache time of 60 seconds. 
+const client = new SublinksClient('sublinks.example.com', {cacheTime: 60});
+
+// Lookup the site info and cache it for the default TTL
+const site = await client.getSite()     
+
+// Lookup a community but store it in cache longer than the default TTL
+const community = await client.getCommunity({name: 'test@example.com'}, {cacheTime:600})
+
+// Lookup a person but perform a fresh API call before storing and returning the response
+const person = await client.getPersonDetails({person_id:5}, {invalidate: true, cacheTime: 120})
+
+// Lookup a person but do not cache the result
+const person = await client.getPersonDetails({username:'bob@example.com'}, {useCache: false})
+
+
+
+// Instantiate a client and disable caching by default
+const clientNoCache = new SublinksClient('sublinks.example.com', {useCache: false})
+
+// Use caching on this request even if caching is disabled at the client level
+const person2 = await clientNoCache.getPersonDetails({username:'bob@example.com'}, {useCache: true, cacheTime: 120})
+
+```
+
+
 
 ### Usage with Insecure HTTP
 By default, the client library will enforce HTTPS even if you specify `http://` in the instance parameter. Under 99.9% of all scenarios, you should take the hint and make sure HTTPS is enabled on your API endpoint.  However, there are times when it may be desirable/necessary to use insecure HTTP such as internal testing or working against the API via localhost.
