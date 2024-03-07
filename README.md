@@ -78,13 +78,13 @@ console.log(version);
 ```
 
 ### Caching
-By default, certain getters cache responses from the API.  This caching is, optinally, performed transparently when calling the following methods.  
+By default, certain getters cache responses from the API.  This caching is, optionally, performed transparently when calling the following methods.  You can specify an additional parameter of type CacheOptions to fine-tune the cache behavior on a method-by-method basis.
 
-- getCommunity
-- getFederatedInstances
-- getModlog
-- getPersonDetails
-- getSite
+- `getCommunity(form, cacheOptions?)`
+- `getFederatedInstances(cacheOptions?)`
+- `getModlog(form?, cacheOptions?)`
+- `getPersonDetails(form, cacheOptions?)`
+- `getSite(cacheOptions?)`
 
 The client class can globally enable or disable caching, and each of the above methods can also adjust cache options individually by specifying an additional config object, `cacheOptions` to those methods.
 
