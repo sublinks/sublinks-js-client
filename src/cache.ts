@@ -2,7 +2,7 @@ import type { CacheOptions } from './types/argumentTypes/CacheOptions'
 
 interface FetchCacheStore {
     
-    [key: string]: {    // "site={instance}, name={community}, id={}, etc
+    [key: string]: {    
         timestamp: number,
         data: any
     }

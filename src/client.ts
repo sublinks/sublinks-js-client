@@ -384,8 +384,8 @@ export class SublinksClient {
         if (form.limit)             cacheKey += `_limit_${form.limit.toString()}`
         if (form.type_)             cacheKey += `_type_${form.type_}`
         if (form.other_person_id)   cacheKey += `_other_person_id_${form.other_person_id.toString()}`
-        if (form.post_id)           cacheKey += `_post_id_${form.post_id.toString()}`
-        if (form.comment_id)        cacheKey += `_comment_id_${form.comment_id.toString()}`
+        //if (form.post_id)           cacheKey += `_post_id_${form.post_id.toString()}`
+        //if (form.comment_id)        cacheKey += `_comment_id_${form.comment_id.toString()}`
         
         return this.cache.get<GetModlogResponse>(cacheKey, cacheOptions) 
             ?? this.cache.put<GetModlogResponse>(cacheKey, await this.lemmy.getModlog(form), cacheOptions)
