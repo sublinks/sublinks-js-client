@@ -136,8 +136,8 @@ client.cache.del('getModlog*')
 
 // Delete any keys from the cache older than the max age.  With no parameter specified, will use the `cacheTime` value specified at client instantiation time.  Can also specify a custom max age, in seconds, to flush keys older than that.
 
-client.cache.housekeep()    // Use class-level max age
-client.cache.housekeep(600) // Delete items older than 60 seconds
+client.cache.housekeep()    // Delete items older than class-level max age
+client.cache.housekeep(600) // Delete items older than 600 seconds
 
 
 
