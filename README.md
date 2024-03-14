@@ -1,12 +1,10 @@
 # sublinks-js-client
 A Javascript/Typescript client to interact with Sublinks.
 
-Acts as a drop-in replacement for `lemmy-js-client` for app developers who want to port their Lemmy clients to Sublinks. The library is targeting the 0.19.0 Lemmy API as that will be
+Acts as a drop-in replacement for `lemmy-js-client` for app developers who want to port their Lemmy clients to Sublinks. The library is targeting the 0.19.3 Lemmy API as that will be
 the major release version at the time Sublinks launches.  The unified client library will allow for a graceful switchover to the native Sublinks API as it is developed and matures.
 
-Currently, all `lemmy-js-client` methods are simply wrapped, and all of its types are re-exported.  
-
-As the native Sublinks API is developed, new methods and types will be added to this library to access those.  Once the native API matures sufficiently, the Lemmy API compatibility will be removed from the backend and `lemmy-js-client` phased out and removed as a dependency of this client library.
+As the native Sublinks API is developed, new methods and types will be added to this library to access those.  If a native API endpoints matures sufficiently, it may replace a the Lemmy compatibility endpoint that a current method calls.
 
 This client may also gain additional convenience methods for the Lemmy JS client, so even if you're developing for that platform, you may find this library useful. Since the Lemmy API will eventually be phased out and removed from this library, you will likely want to fork this into a new project.
 
