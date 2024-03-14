@@ -275,7 +275,7 @@ export class SublinksClient {
     }
 
     approveRegistrationApplication(form: ApproveRegistrationApplication): Promise<RegistrationApplicationResponse> {
-        return this.call <RegistrationApplicationResponse, ApproveRegistrationApplication>( HTTP.PUT, 'api/v3/admin/registration_application/approve', form)
+        return this.call <RegistrationApplicationResponse, ApproveRegistrationApplication> (HTTP.PUT, 'api/v3/admin/registration_application/approve', form)
     }
 
     banFromCommunity(form: BanFromCommunity): Promise<BanFromCommunityResponse> {
