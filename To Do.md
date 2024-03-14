@@ -17,5 +17,6 @@
 - [X] Reimplement uploadImage method in client.ts
 - [X] Reimplement setHeaders method in client.ts
 
+**Create structure to organize native client types**
 
 
