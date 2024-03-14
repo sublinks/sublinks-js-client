@@ -482,11 +482,12 @@ export class SublinksClient {
     }
 
     /** Gets the site info and optionally caches it. 
-     * @param options   Options to control the cache behavior
+     * @param cacheOptions   Options to control the cache behavior
     **/
     async getSite(cacheOptions?: CacheOptions): Promise<GetSiteResponse> {
-        return this.cache.get<GetSiteResponse>('getSite', cacheOptions) 
-            ?? this.cache.put<GetSiteResponse>('getSite', await this.call <GetSiteResponse>(HTTP.GET, 'api/v3/site'), cacheOptions)
+        const cacheKey = 'getSite'
+        return this.cache.get<GetSiteResponse>(cacheKey, cacheOptions) 
+            ?? this.cache.put<GetSiteResponse>(cacheKey, await this.call <GetSiteResponse>(HTTP.GET, 'api/v3/site'), cacheOptions)
     }
 
     getSiteMetadata(form: GetSiteMetadata): Promise<GetSiteMetadataResponse> {
