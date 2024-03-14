@@ -189,6 +189,8 @@ export class SublinksClient {
         this.headers    = options?.headers || {}
         this.baseURL    = `${scheme}${this.instance}`
         this.cache      = new FetchCache(options?.cacheTime ?? 60, options?.useCache ?? true)
+
+        if ( options?.fetchFunction) this.fetchFunction = options.fetchFunction
     }
 
     /** Standard fetch wrapper for native API calls. 
@@ -264,221 +266,202 @@ export class SublinksClient {
     // Lemmy API Compatibility Wrappers
 
     addAdmin(form: AddAdmin): Promise<AddAdminResponse>  {
-        return this.call<AddAdminResponse, AddAdmin>(HTTPVerb.POST, 'api/v3/admin/add', form)
+        return this.call <AddAdminResponse, AddAdmin>(HTTPVerb.POST, 'api/v3/admin/add', form)
     }
 
     addModToCommunity(form: AddModToCommunity): Promise<AddModToCommunityResponse> {
-        return this.call<AddModToCommunityResponse, AddModToCommunity> (HTTPVerb.POST, 'api/v3/community/mod', form)
+        return this.call <AddModToCommunityResponse, AddModToCommunity> (HTTPVerb.POST, 'api/v3/community/mod', form)
     }
 
     approveRegistrationApplication(form: ApproveRegistrationApplication): Promise<RegistrationApplicationResponse> {
-        return this.call<RegistrationApplicationResponse, ApproveRegistrationApplication>( HTTPVerb.PUT, 'api/v3/admin/registration_application/approve', form)
+        return this.call <RegistrationApplicationResponse, ApproveRegistrationApplication>( HTTPVerb.PUT, 'api/v3/admin/registration_application/approve', form)
     }
 
     banFromCommunity(form: BanFromCommunity): Promise<BanFromCommunityResponse> {
-        return this.call<BanFromCommunityResponse, BanFromCommunity> (HTTPVerb.POST, 'api/v3/community/ban_user', form)
+        return this.call <BanFromCommunityResponse, BanFromCommunity> (HTTPVerb.POST, 'api/v3/community/ban_user', form)
     }
 
     banPerson(form: BanPerson): Promise<BanPersonResponse> {
-        return this.call<BanPersonResponse, BanPerson> (HTTPVerb.POST, 'api/v3/user/ban', form)
+        return this.call <BanPersonResponse, BanPerson> (HTTPVerb.POST, 'api/v3/user/ban', form)
     }
 
     blockCommunity(form: BlockCommunity): Promise<BlockCommunityResponse> {
-        return this.call<BlockCommunityResponse, BlockCommunity> (HTTPVerb.POST, 'api/v3/community/block', form)
+        return this.call <BlockCommunityResponse, BlockCommunity> (HTTPVerb.POST, 'api/v3/community/block', form)
     }
     
     blockInstance(form: BlockInstance): Promise<BlockInstanceResponse> {
-        return this.call<BlockInstanceResponse,BlockInstance> (HTTPVerb.POST, 'api/v3/site/block', form)
+        return this.call <BlockInstanceResponse,BlockInstance> (HTTPVerb.POST, 'api/v3/site/block', form)
     }
 
     blockPerson(form: BlockPerson): Promise<BlockPersonResponse> {
-        return this.call<BlockPersonResponse, BlockPerson> (HTTPVerb.POST, 'api/v3/user/block', form)
+        return this.call <BlockPersonResponse, BlockPerson> (HTTPVerb.POST, 'api/v3/user/block', form)
     }
     
     changePassword(form: ChangePassword): Promise<LoginResponse> {
-        return this.call<LoginResponse, ChangePassword> (HTTPVerb.PUT, 'api/v3/user/change_password', form)
+        return this.call <LoginResponse, ChangePassword> (HTTPVerb.PUT, 'api/v3/user/change_password', form)
     }
 
     createComment(form: CreateComment): Promise<CommentResponse> {
-        return this.call<CommentResponse, CreateComment> (HTTPVerb.POST, 'api/v3/comment', form)
+        return this.call <CommentResponse, CreateComment> (HTTPVerb.POST, 'api/v3/comment', form)
     }
 
     createCommentReport(form: CreateCommentReport): Promise<CommentReportResponse> {
-        return this.call<CommentReportResponse, CreateCommentReport> (HTTPVerb.POST, 'api/v3/comment/report', form)
+        return this.call <CommentReportResponse, CreateCommentReport> (HTTPVerb.POST, 'api/v3/comment/report', form)
     }
 
     createCommunity(form: CreateCommunity): Promise<CommunityResponse> {
-        return this.call<CommunityResponse, CreateCommunity> (HTTPVerb.POST, 'api/v3/community', form)
+        return this.call <CommunityResponse, CreateCommunity> (HTTPVerb.POST, 'api/v3/community', form)
     }
 
     createCustomEmoji(form: CreateCustomEmoji): Promise<CustomEmojiResponse> {
-        return this.call<CustomEmojiResponse, CreateCustomEmoji> (HTTPVerb.POST, 'api/v3/custom_emoji', form)
+        return this.call <CustomEmojiResponse, CreateCustomEmoji> (HTTPVerb.POST, 'api/v3/custom_emoji', form)
     }
     
     createPost(form: CreatePost): Promise<PostResponse> {
-        return this.call<PostResponse, CreatePost> (HTTPVerb.POST, 'api/v3/post', form)
+        return this.call <PostResponse, CreatePost> (HTTPVerb.POST, 'api/v3/post', form)
     }
 
     createPostReport(form: CreatePostReport): Promise<PostReportResponse> {
-        return this.call<PostReportResponse, CreatePostReport> (HTTPVerb.POST, 'api/v3/post/report', form)
+        return this.call <PostReportResponse, CreatePostReport> (HTTPVerb.POST, 'api/v3/post/report', form)
     }
 
     createPrivateMessage(form: CreatePrivateMessage): Promise<PrivateMessageResponse> {
-        return this.call<PrivateMessageResponse, CreatePrivateMessage> (HTTPVerb.POST, 'api/v3/private_message', form)
+        return this.call <PrivateMessageResponse, CreatePrivateMessage> (HTTPVerb.POST, 'api/v3/private_message', form)
     }
 
     createPrivateMessageReport(form: CreatePrivateMessageReport): Promise<PrivateMessageReportResponse> {
-        return this.call<PrivateMessageReportResponse, CreatePrivateMessageReport> (HTTPVerb.POST, 'api/v3/private_message/report', form)
+        return this.call <PrivateMessageReportResponse, CreatePrivateMessageReport> (HTTPVerb.POST, 'api/v3/private_message/report', form)
     }
 
     createSite(form: CreateSite): Promise<SiteResponse> {
-        return this.call<SiteResponse, CreateSite> (HTTPVerb.POST, 'api/v3/site', form)
+        return this.call <SiteResponse, CreateSite> (HTTPVerb.POST, 'api/v3/site', form)
     }
 
     deleteAccount(form: DeleteAccount): Promise<SuccessResponse> {
-        return this.call<SuccessResponse, DeleteAccount> (HTTPVerb.POST, 'api/v3/user/delete_account', form)
+        return this.call <SuccessResponse, DeleteAccount> (HTTPVerb.POST, 'api/v3/user/delete_account', form)
     }
 
     deleteComment(form: DeleteComment): Promise<CommentResponse> {
-        return this.call<CommentResponse, DeleteComment> (HTTPVerb.POST, 'api/v3/comment/delete', form)
+        return this.call <CommentResponse, DeleteComment> (HTTPVerb.POST, 'api/v3/comment/delete', form)
     }
 
     deleteCommunity(form: DeleteCommunity): Promise<CommunityResponse> {
-        return this.call<CommunityResponse, DeleteCommunity> (HTTPVerb.POST, 'api/v3/community/delete', form)
+        return this.call <CommunityResponse, DeleteCommunity> (HTTPVerb.POST, 'api/v3/community/delete', form)
     }
 
     deleteCustomEmoji(form: DeleteCustomEmoji): Promise<SuccessResponse> {
-        return this.call<SuccessResponse, DeleteCustomEmoji> (HTTPVerb.POST, 'api/v3/custom_emoji/delete', form)
+        return this.call <SuccessResponse, DeleteCustomEmoji> (HTTPVerb.POST, 'api/v3/custom_emoji/delete', form)
     }
 
     // This *should* work, but the way the Lemmy devs aren't even bothering to handle this internally is stupid.
     deleteImage({ token, filename }: DeleteImage): Promise<boolean> {
-        return this.call<boolean, DeleteImage> (HTTPVerb.GET, `pictrs/delete/${token}/${filename}`)
+        return this.call <boolean, DeleteImage> (HTTPVerb.GET, `pictrs/delete/${token}/${filename}`)
     }
 
     deletePost(form: DeletePost): Promise<PostResponse> {
-        return this.call<PostResponse, DeletePost> (HTTPVerb.POST, 'api/v3/post/delete', form)
+        return this.call <PostResponse, DeletePost> (HTTPVerb.POST, 'api/v3/post/delete', form)
     }
 
     deletePrivateMessage(form: DeletePrivateMessage): Promise<PrivateMessageResponse> {
-        return this.call<PrivateMessageResponse, DeletePrivateMessage> (HTTPVerb.POST, 'api/v3/private_message/delete', form)
+        return this.call <PrivateMessageResponse, DeletePrivateMessage> (HTTPVerb.POST, 'api/v3/private_message/delete', form)
     }
     
     distinguishComment(form: DistinguishComment): Promise<CommentResponse> {
-        return this.call<CommentResponse, DistinguishComment> (HTTPVerb.POST, 'api/v3/comment/distinguish', form)
+        return this.call <CommentResponse, DistinguishComment> (HTTPVerb.POST, 'api/v3/comment/distinguish', form)
     }
 
     editComment(form: EditComment): Promise<CommentResponse> {
-        return this.call<CommentResponse, EditComment> (HTTPVerb.PUT, 'api/v3/comment', form)
+        return this.call <CommentResponse, EditComment> (HTTPVerb.PUT, 'api/v3/comment', form)
     }
 
     editCommunity(form: EditCommunity): Promise<CommunityResponse> {
-        return this.call<CommunityResponse, EditCommunity> (HTTPVerb.PUT, 'api/v3/community', form)
+        return this.call <CommunityResponse, EditCommunity> (HTTPVerb.PUT, 'api/v3/community', form)
     }
 
     editCustomEmoji(form: EditCustomEmoji): Promise<CustomEmojiResponse> {
-        return this.call<CustomEmojiResponse, EditCustomEmoji> (HTTPVerb.PUT,'api/v3/custom_emoji', form)
+        return this.call <CustomEmojiResponse, EditCustomEmoji> (HTTPVerb.PUT,'api/v3/custom_emoji', form)
     }
 
     editPost(form: EditPost): Promise<PostResponse> {
-        return this.call<PostResponse, EditPost> (HTTPVerb.PUT, 'api/v3/post', form)
+        return this.call <PostResponse, EditPost> (HTTPVerb.PUT, 'api/v3/post', form)
     }
 
     editPrivateMessage(form: EditPrivateMessage): Promise<PrivateMessageResponse> {
-        return this.call<PrivateMessageResponse, EditPrivateMessage> (HTTPVerb.PUT, 'api/v3/private_message', form)
+        return this.call <PrivateMessageResponse, EditPrivateMessage> (HTTPVerb.PUT, 'api/v3/private_message', form)
     }
 
     editSite(form: EditSite): Promise<SiteResponse> {
-        return this.call<SiteResponse, EditSite> (HTTPVerb.PUT, 'api/v3/site', form)
+        return this.call <SiteResponse, EditSite> (HTTPVerb.PUT, 'api/v3/site', form)
     }
 
     exportSettings():Promise<string> {
-        return this.call<string> (HTTPVerb.GET, 'api/v3/user/export_settings')
+        return this.call <string> (HTTPVerb.GET, 'api/v3/user/export_settings')
     }
     
     featurePost(form: FeaturePost): Promise<PostResponse> {
-        return this.call<PostResponse, FeaturePost> (HTTPVerb.POST, 'api/v3/post/feature', form)
+        return this.call <PostResponse, FeaturePost> (HTTPVerb.POST, 'api/v3/post/feature', form)
     }
 
     followCommunity(form: FollowCommunity):Promise<CommunityResponse> {
-        return this.call<CommunityResponse, FollowCommunity> (HTTPVerb.POST, 'api/v3/community/follow', form)
+        return this.call <CommunityResponse, FollowCommunity> (HTTPVerb.POST, 'api/v3/community/follow', form)
     }
 
     generateTotpSecret(): Promise<GenerateTotpSecretResponse> {
-        return this.call<GenerateTotpSecretResponse> (HTTPVerb.POST, 'api/v3/user/totp/generate')
+        return this.call <GenerateTotpSecretResponse> (HTTPVerb.POST, 'api/v3/user/totp/generate')
     }
     
     getBannedPersons(): Promise<BannedPersonsResponse> {
-        return this.call<BannedPersonsResponse> (HTTPVerb.GET, 'api/v3/user/banned')
+        return this.call <BannedPersonsResponse> (HTTPVerb.GET, 'api/v3/user/banned')
     }
 
     getCaptcha(): Promise<GetCaptchaResponse> {
-        return this.call<GetCaptchaResponse> (HTTPVerb.GET, 'api/v3/user/get_captcha')
+        return this.call <GetCaptchaResponse> (HTTPVerb.GET, 'api/v3/user/get_captcha')
     }
 
     getComment(form: GetComment): Promise<CommentResponse> {
-        return this.call<CommentResponse, GetComment> (HTTPVerb.GET, 'api/v3/comment', form)
+        return this.call <CommentResponse, GetComment> (HTTPVerb.GET, 'api/v3/comment', form)
     }
 
     getComments(form: GetComments = {}): Promise<GetCommentsResponse> {
-        return this.call<GetCommentsResponse, GetComments> (HTTPVerb.GET, 'api/v3/comment/list', form)
+        return this.call <GetCommentsResponse, GetComments> (HTTPVerb.GET, 'api/v3/comment/list', form)
     }
     
     async getCommunity(form: GetCommunity = {}, cacheOptions?: CacheOptions):Promise<GetCommunityResponse> {
         if (!form.id && !form.name) return {} as GetCommunityResponse
 
-        const cacheKey = form.id ? `getCommunity_id_${form.id.toString()}` : `getCommunity_name_${form.name}`
+        const cacheKey = this.cache.cacheKey("getCommunity", form);
         return this.cache.get<GetCommunityResponse>(cacheKey, cacheOptions) 
-            ?? this.cache.put<GetCommunityResponse>(cacheKey, await this.call<GetCommunityResponse, GetCommunity> (HTTPVerb.GET, 'api/v3/community', form), cacheOptions)
+            ?? this.cache.put<GetCommunityResponse>(cacheKey, await this.call <GetCommunityResponse, GetCommunity> (HTTPVerb.GET, 'api/v3/community', form), cacheOptions)
     }
 
     async getFederatedInstances(cacheOptions?: CacheOptions): Promise<GetFederatedInstancesResponse> {
         const cacheKey = "getFederatedInstances"
         
         return this.cache.get<GetFederatedInstancesResponse>(cacheKey, cacheOptions) 
-            ?? this.cache.put<GetFederatedInstancesResponse>(cacheKey, await this.call<GetFederatedInstancesResponse> (HTTPVerb.GET, 'api/v3/federated_instances'), cacheOptions)
+            ?? this.cache.put<GetFederatedInstancesResponse>(cacheKey, await this.call <GetFederatedInstancesResponse> (HTTPVerb.GET, 'api/v3/federated_instances'), cacheOptions)
     }
 
     async getModlog(form: GetModlog = {}, cacheOptions?: CacheOptions): Promise<GetModlogResponse> {
-        let cacheKey = 'getModlog'
-        
-        if (form.mod_person_id)     cacheKey += `_mod_person_id_${form.mod_person_id.toString()}`
-        if (form.community_id)      cacheKey += `_community_id_${form.community_id.toString()}`
-        if (form.page)              cacheKey += `_page_${form.page.toString()}`
-        if (form.limit)             cacheKey += `_limit_${form.limit.toString()}`
-        if (form.type_)             cacheKey += `_type_${form.type_}`
-        if (form.other_person_id)   cacheKey += `_other_person_id_${form.other_person_id.toString()}`
-        
-        // These are new in 0.19.4
-        //if (form.post_id)           cacheKey += `_post_id_${form.post_id.toString()}`
-        //if (form.comment_id)        cacheKey += `_comment_id_${form.comment_id.toString()}`
-        
+        const cacheKey = this.cache.cacheKey("getModlog", form)
+
         return this.cache.get<GetModlogResponse>(cacheKey, cacheOptions) 
-            ?? this.cache.put<GetModlogResponse>(cacheKey, await this.call<GetModlogResponse, GetModlog> (HTTPVerb.GET, 'api/v3/modlog', form), cacheOptions)
+            ?? this.cache.put<GetModlogResponse>(cacheKey, await this.call <GetModlogResponse, GetModlog> (HTTPVerb.GET, 'api/v3/modlog', form), cacheOptions)
         
     }
 
     async getPersonDetails(form: GetPersonDetails = {}, cacheOptions?: CacheOptions): Promise<GetPersonDetailsResponse> {
-        let cacheKey = 'getPersonDetails'
+        const cacheKey = this.cache.cacheKey("getPersonDetails", form)
 
-        if (form.person_id)         cacheKey += `_person_id_${form.person_id.toString()}`
-        if (form.username)          cacheKey += `_username_${form.username}`
-        if (form.sort)              cacheKey += `_sort_${form.sort}`
-        if (form.page)              cacheKey += `_page_${form.page.toString()}`
-        if (form.limit)             cacheKey += `_limit_${form.limit.toString()}`
-        if (form.community_id)      cacheKey += `_community_id_${form.community_id.toString()}`
-        if (form.saved_only)        cacheKey += `_saved_only`
-                
         return this.cache.get<GetPersonDetailsResponse>(cacheKey, cacheOptions) 
-            ?? this.cache.put<GetPersonDetailsResponse>(cacheKey, await this.call<GetPersonDetailsResponse, GetPersonDetails> (HTTPVerb.GET, 'api/v3/user', form), cacheOptions)
+            ?? this.cache.put<GetPersonDetailsResponse>(cacheKey, await this.call <GetPersonDetailsResponse, GetPersonDetails> (HTTPVerb.GET, 'api/v3/user', form), cacheOptions)
     }
 
     getPersonMentions(form: GetPersonMentions): Promise<GetPersonMentionsResponse> {
-        return this.call<GetPersonMentionsResponse, GetPersonMentions> (HTTPVerb.GET, 'api/v3/user/mention', form)
+        return this.call <GetPersonMentionsResponse, GetPersonMentions> (HTTPVerb.GET, 'api/v3/user/mention', form)
     }
 
     getPost(form: GetPost = {}): Promise<GetPostResponse> {
-        return this.call<GetPostResponse, GetPost> (HTTPVerb.GET, 'api/v3/post', form)
+        return this.call <GetPostResponse, GetPost> (HTTPVerb.GET, 'api/v3/post', form)
     }
 
     getPosts(form: GetPosts = {}): Promise<GetPostsResponse> {
@@ -502,7 +485,7 @@ export class SublinksClient {
     **/
     async getSite(cacheOptions?: CacheOptions): Promise<GetSiteResponse> {
         return this.cache.get<GetSiteResponse>('getSite', cacheOptions) 
-            ?? this.cache.put<GetSiteResponse>('getSite', await this.call<GetSiteResponse>(HTTPVerb.GET, 'api/v3/site'), cacheOptions)
+            ?? this.cache.put<GetSiteResponse>('getSite', await this.call <GetSiteResponse>(HTTPVerb.GET, 'api/v3/site'), cacheOptions)
     }
 
     getSiteMetadata(form: GetSiteMetadata): Promise<GetSiteMetadataResponse> {

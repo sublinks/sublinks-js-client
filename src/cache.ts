@@ -35,7 +35,17 @@ export class FetchCache {
     now(): number {
         return Math.floor(new Date().getTime()/1000)
     }
-
+    /** Returns a cache key with a given name and optionally the parameters used for the call whose response should be cached 
+     * @param name The name of the calling function
+     * @param data An object of key/values that will be serialized to generate the key
+     * **/
+    cacheKey(name:string, data:any = {}): string  {
+        let cacheKey = name
+        for (let key of Object.keys(data)) {
+            cacheKey += `_${key}_${data[key].toString()}`
+        }
+        return cacheKey
+    }
     
     /** Flushes the cache **/
     flush() {
