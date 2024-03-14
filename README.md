@@ -56,6 +56,8 @@ authenticated methods to work with both auth schemes (body/URL param in 0.18.x a
 Only use this option if you *must* support 0.18.x.  Rather than explicitly creating an 0.18.x client, it is recommended
 to call `getSite()` and check the version returned.  If it's 0.18.x then set compatibility mode to true.
 
+**Note**:  If you don't want to maintain explicit 0.18.x compatibility in your exisitng client, you can remove any `auth` keys in the form data of your method calls to the old `lemmy-js-client`.  Once you set the auth header with `setAuth()`, it will keep the token in the client and add it automatically.
+
 ```typescript
 import { 
     type GetSiteResponse,
