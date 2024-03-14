@@ -68,7 +68,7 @@ const client = new SublinksClient('sublinks.example.com', {compatible18: true});
 // Alternatively, dynamically detect if it needs to use compatibility mode
 const client = new SublinksClient('sublinks.example.com');
 site = await client.getSite({useCache: false});   // Don't cache the test lookup
-if (site?.version.startsWith('0.18.')) client.compatible18 = true
+if (site?.version?.startsWith('0.18.')) client.compatible18 = true
 
 
 try {
