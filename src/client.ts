@@ -165,9 +165,9 @@ import { FetchCache } from './cache'
 */
 export class SublinksClient {
     baseURL: string             // Base URL of the API (https://instance.example.com)
-    instance: string
+    instance: string            // Instance base domain (instance.example.com)
     headers: HeadersObject      // Key-value object store for HTTP headers the client will send to the API server.
-    cache: FetchCache           
+    cache: FetchCache           // A Key-Value cache store to hold API getter results
     compatible18: boolean       // Compatibility option to send `auth` in form responses for 0.18.x compatibility
     fetchFunction = fetch       // Allows overriding native fetch with something like cross-fetch
 
@@ -178,10 +178,9 @@ export class SublinksClient {
      * @param options is an object of type HttpClientConstructorOptions
     */
     constructor( instance: string, options?: HttpClientConstructorOptions) {
-        
-        // Strip scheme and anything except the hostname if provided
         this.instance = instance
         
+        // Strip scheme and anything except the hostname if provided
         if (instance.startsWith('https://') || instance.startsWith('http://')) {
             this.instance = new URL(instance).host;
         }
@@ -192,7 +191,7 @@ export class SublinksClient {
         this.cache        = new FetchCache(options?.cacheTime ?? 60, options?.useCache ?? true)
         this.compatible18 = options?.compatible18 ?? false
         
-        if ( options?.fetchFunction) this.fetchFunction = options.fetchFunction
+        if (options?.fetchFunction) this.fetchFunction = options.fetchFunction
     }
 
     /** Standard fetch wrapper for native API calls. 
@@ -223,14 +222,13 @@ export class SublinksClient {
 
         try {
             if (method == HTTPVerb.GET) {
-                if (form) {
-                    let keys = Object.keys(form);
-                    keys.forEach((key:string) => {
-                        let value = (form as any)[key] as string;
-                        url.searchParams.set(key, value)
-                    })
-                }
+                let keys = Object.keys(form);
 
+                keys.forEach((key:string) => {
+                    let value = (form as any)[key] as string;
+                    url.searchParams.set(key, value)
+                })
+                
                 response = await this.fetchFunction(url, {
                     method: HTTPVerb[method],
                     headers: this.headers,
