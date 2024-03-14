@@ -4,7 +4,7 @@
 - [X] Add `cacheTime` setting (class level, probably) and reasonable default value
 - [X] Add `revalidate` option to bypass cache and store updated response
 - [X] Add `nocache` option to bypass cache and not store updated response
-- [ ] Move cache key generation to internal method
+- [X] Move cache key generation to internal method
 
 
 **Remove Lemmy JS Client as Dependency**

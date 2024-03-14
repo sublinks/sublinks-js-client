@@ -45,6 +45,45 @@ if (site?.my_user) console.log("Successfully logged in");
 else console.log("Login was unsuccessful");
 ```
 
+### Compatibility Mode for 0.18.x
+If you need to target 0.18.x with this library, you will need to supply `compatible18: true` in the client constructor options.  
+
+All this does is extract the JWT from the client's internal headers and add it to the `form` object when making API requests.  It will not prevent API calls to unsupported endpoints.
+Additionally, it does not backport any type definition differences, so you may have to ignore or fix those in client code.  The compatibility mode is simply to allow
+authenticated methods to work with both auth schemes (form param in 0.18.x and auth header in 0.19.0+).
+
+Only use this option if you *must* support 0.18.x.  Consider either calling getSite() and re-initializing the client with compatibility mode if needed or reading this value from an environment variable.
+
+```javascript
+import { 
+    type GetSiteResponse,
+    SublinksClient 
+} from 'sublinks-js-client'
+
+let site: GetSiteResponse | undefined = undefined
+
+const client = new SublinksClient('sublinks.example.com', {compatible18: true});
+
+try {
+    let { jwt }  = await client.login({
+        username_or_email: 'TestUser',
+        password: '$uperS3cre+P@$sw0rd!'
+    })
+
+    if (jwt) client.setAuth(jwt);
+
+    site = await client.getSite(); 
+}
+catch (err) {
+    console.log(err)
+}
+
+
+if (site?.my_user) console.log("Successfully logged in using compatibility mode.");
+else console.log("Login was unsuccessful");
+
+```
+
 
 ### Caching
 By default, certain getters cache responses from the API.  This caching is, optionally, performed transparently when calling the following methods.  You can specify an additional parameter of type CacheOptions to fine-tune the cache behavior on a method-by-method basis.

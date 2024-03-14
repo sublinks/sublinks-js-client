@@ -4,4 +4,5 @@ export interface HttpClientConstructorOptions {
     insecure?: boolean
     cacheTime?: number
     useCache?: boolean
+    compatible18?: boolean
 }

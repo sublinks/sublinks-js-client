@@ -168,6 +168,7 @@ export class SublinksClient {
     instance: string
     headers: HeadersObject      // Key-value object store for HTTP headers the client will send to the API server.
     cache: FetchCache           
+    compatible18: boolean       // Compatibility option to send `auth` in form responses for 0.18.x compatibility
     fetchFunction = fetch       // Allows overriding native fetch with something like cross-fetch
 
     /** 
@@ -185,16 +186,17 @@ export class SublinksClient {
             this.instance = new URL(instance).host;
         }
         
-        let scheme      = options?.insecure ? 'http://' : 'https://'
-        this.headers    = options?.headers || {}
-        this.baseURL    = `${scheme}${this.instance}`
-        this.cache      = new FetchCache(options?.cacheTime ?? 60, options?.useCache ?? true)
-
+        let scheme        = options?.insecure ? 'http://' : 'https://'
+        this.headers      = options?.headers || {}
+        this.baseURL      = `${scheme}${this.instance}`
+        this.cache        = new FetchCache(options?.cacheTime ?? 60, options?.useCache ?? true)
+        this.compatible18 = options?.compatible18 ?? false
+        
         if ( options?.fetchFunction) this.fetchFunction = options.fetchFunction
     }
 
     /** Standard fetch wrapper for native API calls. 
-    * 
+    
     * ResponseType is the type definition to expect from the response. 
      
     * FormDataType is the type definition for the `form` parameter data
@@ -208,11 +210,17 @@ export class SublinksClient {
     */
     async call <ResponseType, FormDataType extends object = object> (method: HTTPVerb, endpoint: string, form: FormDataType = {} as FormDataType): Promise<ResponseType> {
         const url = new URL(this.baseURL);
-        url.pathname += `${endpoint}`;
+        url.pathname = `${endpoint}`;
         
         let response: Response 
         let json: any
         
+        // Compatibility shim for 0.18.x since it requires the auth token be provided in the form data.
+        if (this.compatible18 && this.headers['Authorization'].includes('Bearer ')) {
+            //@ts-ignore since `auth` is not defined in any of the current Lemmy types anymore
+            form.auth = this.headers['Authorization'].replace('Bearer ', '')
+        }
+
         try {
             if (method == HTTPVerb.GET) {
                 if (form) {
