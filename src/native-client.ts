@@ -1,5 +1,5 @@
 const API_VERSION = "1"
-export type HTTPVerb = 'GET' | 'POST' | 'PUT' | 'OPTIONS' | 'DELETE' | 'PATCH'
+type HTTPVerb = 'GET' | 'POST' | 'PUT' | 'OPTIONS' | 'DELETE' | 'PATCH'
 
 // Import types
 import { HeadersObject} from './types/HeadersObject'

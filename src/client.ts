@@ -1,6 +1,17 @@
 import { HeadersObject } from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
 
+//export type HTTPVerb = 'GET' | 'POST' | 'PUT' | 'OPTIONS' | 'DELETE' | 'PATCH'
+enum HTTPVerb {
+    GET,
+    POST,
+    PUT,
+    OPTIONS,
+    DELETE,
+    PATCH
+}
+import { fetch } from 'cross-fetch'
+
 // Import Lemmy types
 import type { 
     AddAdmin,
@@ -160,6 +171,7 @@ export class SublinksClient {
     lemmy: LemmyHttp            // Lemmy HTTP client for legacy API calls
     headers: HeadersObject      // Key-value object store for HTTP headers the client will send to the API server.
     cache: FetchCache           
+    fetchFunction = fetch
 
     /** 
      * Client library for Sublinks and, during compatibility phase, Lemmy.
@@ -185,6 +197,69 @@ export class SublinksClient {
         this.cache      = new FetchCache(options?.cacheTime ?? 60, options?.useCache ?? true)
     }
 
+    /** Standard fetch wrapper for native API calls. 
+    * 
+    * ResponseType is the type definition to expect from the response. 
+     
+    * FormDataType is the type definition for the `form` parameter data
+    
+    * Note:  These are reversed from how Lemmy's wrapper function is implemented to allow shorter invocations for GET requests by not requiring a dummy 'object' type be passed for the non-existent form data when not needed.
+     
+    * 
+    * @param method    HTTP method to use for the call
+    * @param endpoint  The relative API endpoint (e.g. /siteinfo -> https://{instance.com}/sublinks-api/v2/siteinfo)
+    * @param form      The optional body payload for non-GET requests or key/values for GET query string params
+    */
+    async call <ResponseType, FormDataType extends object = object> (method: HTTPVerb, endpoint: string, form: FormDataType = {} as FormDataType): Promise<ResponseType> {
+        const url = new URL(this.baseURL);
+        url.pathname += `${endpoint}`;
+        
+        let response: Response 
+        let json: any
+        
+        console.log(`Calling ${method} - ${url}`)
+        
+        try {
+            if (method == HTTPVerb.GET) {
+                if (form) {
+                    let keys = Object.keys(form);
+                    keys.forEach((key:string) => {
+                        let value = (form as any)[key] as string;
+                        url.searchParams.set(key, value)
+                    })
+                }
+
+                response = await this.fetchFunction(url, {
+                    method: HTTPVerb[method],
+                    headers: this.headers,
+                });
+            }
+            else {
+                response = await this.fetchFunction(url, {
+                    method: HTTPVerb[method],
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...this.headers,
+                    },
+                    body: JSON.stringify(form)
+                });
+            }
+
+            if (response.ok) {
+                json = await response.json();
+            }
+            else {
+                throw new Error(response.statusText ?? "Bad API response");
+            }
+        }
+
+        catch (err) {
+            throw new Error(err);
+        }
+
+        return json;
+    }
+
     // Utility Functions
     /** Returns the current date/time as a Unix timestamp rounded down to nearest second. */
     now(): number {
@@ -201,31 +276,31 @@ export class SublinksClient {
     // Lemmy API Compatibility Wrappers
 
     addAdmin(form: AddAdmin): Promise<AddAdminResponse>  {
-        return this.lemmy.addAdmin(form);
+        return this.call<AddAdminResponse, AddAdmin>(HTTPVerb.POST, 'api/v3/admin/add', form)
     }
 
     addModToCommunity(form: AddModToCommunity): Promise<AddModToCommunityResponse> {
-        return this.lemmy.addModToCommunity(form);
+        return this.call<AddModToCommunityResponse, AddModToCommunity> (HTTPVerb.POST, 'api/v3/community/mod', form)
     }
 
     approveRegistrationApplication(form: ApproveRegistrationApplication): Promise<RegistrationApplicationResponse> {
-        return this.lemmy.approveRegistrationApplication(form);
+        return this.call<RegistrationApplicationResponse, ApproveRegistrationApplication>( HTTPVerb.PUT, 'api/v3/admin/registration_application/approve', form)
     }
 
     banFromCommunity(form: BanFromCommunity): Promise<BanFromCommunityResponse> {
-        return this.lemmy.banFromCommunity(form);
+        return this.call<BanFromCommunityResponse, BanFromCommunity> (HTTPVerb.POST, 'api/v3/community/ban_user', form)
     }
 
     banPerson(form: BanPerson): Promise<BanPersonResponse> {
-        return this.lemmy.banPerson(form);
+        return this.call<BanPersonResponse, BanPerson> (HTTPVerb.POST, 'api/v3/user/ban', form)
     }
 
     blockCommunity(form: BlockCommunity): Promise<BlockCommunityResponse> {
-        return this.lemmy.blockCommunity(form);
+        return this.call<BlockCommunityResponse, BlockCommunity> (HTTPVerb.POST, 'api/v3/community/block', form)
     }
     
     blockInstance(form: BlockInstance): Promise<BlockInstanceResponse> {
-        return this.lemmy.blockInstance(form);
+        return this.call<BlockInstanceResponse,BlockInstance> (HTTPVerb.POST, 'api/v3/site/block', form)
     }
 
     blockPerson(form: BlockPerson): Promise<BlockPersonResponse> {
@@ -405,7 +480,6 @@ export class SublinksClient {
         
         return this.cache.get<GetPersonDetailsResponse>(cacheKey, cacheOptions) 
             ?? this.cache.put<GetPersonDetailsResponse>(cacheKey, await this.lemmy.getPersonDetails(form), cacheOptions)
-
     }
 
     getPersonMentions(form: GetPersonMentions): Promise<GetPersonMentionsResponse> {
@@ -437,7 +511,7 @@ export class SublinksClient {
     **/
     async getSite(cacheOptions?: CacheOptions): Promise<GetSiteResponse> {
         return this.cache.get<GetSiteResponse>('getSite', cacheOptions) 
-            ?? this.cache.put<GetSiteResponse>('getSite', await this.lemmy.getSite(), cacheOptions)
+            ?? this.cache.put<GetSiteResponse>('getSite', await this.call<GetSiteResponse>(HTTPVerb.GET, 'api/v3/site'), cacheOptions)
     }
 
     getSiteMetadata(form: GetSiteMetadata): Promise<GetSiteMetadataResponse> {
