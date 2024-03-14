@@ -200,7 +200,8 @@ export class SublinksClient {
      
     * FormDataType is the type definition for the `form` parameter data
     
-    * Note:  These are reversed from how Lemmy's wrapper function is implemented to allow shorter invocations for GET requests by not requiring a dummy 'object' type be passed for the non-existent form data when not needed.
+    * Note:  These are reversed from how Lemmy's wrapper function is implemented to allow shorter invocations for GET requests by not requiring a dummy 
+             'object' type be passed for the non-existent form data when not needed.
      
     * 
     * @param method    HTTP method to use for the call
@@ -209,7 +210,7 @@ export class SublinksClient {
     */
     async call <ResponseType, FormDataType extends object = object> (method: HTTPVerb, endpoint: string, form: FormDataType = {} as FormDataType): Promise<ResponseType> {
         const url = new URL(this.baseURL);
-        url.pathname = `${endpoint}`;
+        url.pathname = endpoint;
         
         let response: Response 
         let json: any
