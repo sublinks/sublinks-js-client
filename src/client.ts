@@ -1,6 +1,7 @@
+import { CacheOptions } from './types/argumentTypes/CacheOptions'
 import { HeadersObject } from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
-import { CacheOptions } from './types/argumentTypes/CacheOptions'
+
 import { FetchCache } from './cache'
 //import { fetch } from 'cross-fetch'
 
