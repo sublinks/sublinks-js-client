@@ -122,7 +122,7 @@ interface CacheOptions {
 ```
 
 
-#### Example
+#### Examples
 ```Javascript
 import { SublinksClient } from 'sublinks-js-client'
 
