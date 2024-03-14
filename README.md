@@ -53,10 +53,16 @@ All this does is tell the library to extract the JWT from the client's internal 
 Additionally, it does not backport any type definition differences, so you may have to ignore or extend those types in your client code.  The compatibility mode is simply to allow
 authenticated methods to work with both auth schemes (body/URL param in 0.18.x and auth header in 0.19.0+).
 
-Only use this option if you *must* support 0.18.x.  Rather than explicitly creating an 0.18.x client, it is recommended
-to call `getSite()` and check the version returned.  If it's 0.18.x then set compatibility mode to true.
+Only use this option if you *must* support 0.18.x.  
 
-**Note**:  If you don't want to maintain explicit 0.18.x compatibility in your exisitng client, you can remove any `auth` keys in the form data of your method calls to the old `lemmy-js-client`.  Once you set the auth header with `setAuth()`, it will keep the token in the client and add it automatically.
+Rather than explicitly creating an 0.18.x client, it is recommended
+to call `getSite()` and check the version returned.  If it's 0.18.x then change compatibility mode to true. This will cause one extra `getSite()` call per instantiation, so if you're creating disposable clients frequently, you may want to explicitly set compat mode.
+
+**Note 1**: Compatibility mode is still compatible with 0.19.x API; it will still send the `Authorization Bearer: {jwt}` header on every request as well as the `auth` key (which 0.19.x ignores).
+
+**Note 2**:  If you don't want to maintain explicit 0.18.x compatibility in your exisitng client, you can remove any `auth` keys in the form data of your method calls to the old `lemmy-js-client`.  Once you set the auth header with `setAuth()`, it will keep the token in the client and add it automatically.
+
+Both of those aspects of the library can be used so that `sublinks-js-client` can also act as a bridge for an 0.18.x client to slowly adopt 0.19.x features.
 
 ```typescript
 import { 
@@ -69,11 +75,10 @@ let site: GetSiteResponse | undefined = undefined
 // Create 0.18.x compatible client explicitly
 const client = new SublinksClient('sublinks.example.com', {compatible18: true});
 
-// Alternatively, dynamically detect if it needs to use compatibility mode
+// Preferably, dynamically detect if it needs to use compatibility mode. 
 const client = new SublinksClient('sublinks.example.com');
-site = await client.getSite({useCache: false});   // Don't cache the test lookup
-if (site?.version?.startsWith('0.18.')) client.compatible18 = true
-
+site = await client.getSite({useCache: false});   // Don't cache the detection lookup
+client.compatible18 = site?.version?.startsWith('0.18.') ?? false
 
 try {
     let { jwt }  = await client.login({
