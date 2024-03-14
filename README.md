@@ -46,7 +46,7 @@ else console.log("Login was unsuccessful");
 ```
 
 ### Compatibility Mode for 0.18.x
-If you need to target 0.18.x with this library, you will need to supply `compatible18: true` in the client constructor options.  
+If you need to target 0.18.x with this library, you will need to supply `compatible18: true` in the client constructor options or call `client.compatible18=true` after initialization.
 
 All this does is extract the JWT from the client's internal headers and add it to the `form` object when making API requests.  It will not prevent API calls to unsupported endpoints.
 Additionally, it does not backport any type definition differences, so you may have to ignore or fix those in client code.  The compatibility mode is simply to allow
@@ -62,7 +62,14 @@ import {
 
 let site: GetSiteResponse | undefined = undefined
 
+// Create 0.18.x compatible client explicitly
 const client = new SublinksClient('sublinks.example.com', {compatible18: true});
+
+// Alternatively, dynamically detect if it needs to use compatibility mode
+const client = new SublinksClient('sublinks.example.com');
+const site = await client.getSite({useCache: false});   // Don't cache the test lookup
+if (site?.version.startsWith('0.18.')) client.compatible18 = true
+
 
 try {
     let { jwt }  = await client.login({
