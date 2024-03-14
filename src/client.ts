@@ -1,7 +1,6 @@
 import { HeadersObject } from './types/HeadersObject'
 import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptions'
 
-//export type HTTPVerb = 'GET' | 'POST' | 'PUT' | 'OPTIONS' | 'DELETE' | 'PATCH'
 enum HTTPVerb {
     GET,
     POST,
@@ -10,7 +9,7 @@ enum HTTPVerb {
     DELETE,
     PATCH
 }
-import { fetch } from 'cross-fetch'
+//import { fetch } from 'cross-fetch'
 
 // Import Lemmy types
 import type { 
@@ -92,10 +91,14 @@ import type {
     GetUnreadCountResponse,
     GetUnreadRegistrationApplicationCountResponse,
     HideCommunity,
+    ListCommentLikes,
+    ListCommentLikesResponse,
     ListCommentReports,
     ListCommentReportsResponse,
     ListCommunities,
     ListCommunitiesResponse,
+    ListPostLikes,
+    ListPostLikesResponse,
     ListPostReports,
     ListPostReportsResponse,
     ListPrivateMessageReports,
@@ -145,7 +148,7 @@ import type {
     UploadImage,
     UploadImageResponse,
     VerifyEmail
-} from 'lemmy-js-client'
+} from './types/lemmy/index'
 
 
 
@@ -156,10 +159,6 @@ import type { StatusResponse } from './types/StatusResponse'
 import type { SublinksClientCache } from './types/SublinksClientCache'
 
 import { FetchCache } from './cache'
-import { LemmyHttp } from 'lemmy-js-client'
-import { SublinksHttp } from './native-client'
-
-
 
 /**
  * Universal Sublinks/Lemmy client that works with both APIs
@@ -167,11 +166,9 @@ import { SublinksHttp } from './native-client'
 export class SublinksClient {
     baseURL: string             // Base URL of the API (https://instance.example.com)
     instance: string
-    native: SublinksHttp        // Native HTTP client
-    lemmy: LemmyHttp            // Lemmy HTTP client for legacy API calls
     headers: HeadersObject      // Key-value object store for HTTP headers the client will send to the API server.
     cache: FetchCache           
-    fetchFunction = fetch
+    fetchFunction = fetch       // Allows overriding native fetch with something like cross-fetch
 
     /** 
      * Client library for Sublinks and, during compatibility phase, Lemmy.
@@ -191,9 +188,6 @@ export class SublinksClient {
         let scheme      = options?.insecure ? 'http://' : 'https://'
         this.headers    = options?.headers || {}
         this.baseURL    = `${scheme}${this.instance}`
-        
-        this.lemmy      = new LemmyHttp(this.baseURL, options);
-        this.native     = new SublinksHttp(this.baseURL, options)
         this.cache      = new FetchCache(options?.cacheTime ?? 60, options?.useCache ?? true)
     }
 
@@ -264,12 +258,6 @@ export class SublinksClient {
     /** Returns the current date/time as a Unix timestamp rounded down to nearest second. */
     now(): number {
         return Math.floor(new Date().getTime()/1000)
-    }
-
-    // Native Method Wrappers
-    /** Fetches and returns the version of the native API */
-    apiVersion(): Promise<StatusResponse> {
-        return this.native.apiVersion();
     }
 
 
@@ -546,135 +534,143 @@ export class SublinksClient {
     }
 
     likePost(form: CreatePostLike): Promise<PostResponse> {
-        return this.lemmy.likePost(form)
+        return this.call <PostResponse, CreatePostLike> (HTTPVerb.POST, 'api/v3/post/like', form)
+    }
+
+    listCommentLikes(form: ListCommentLikes): Promise<ListCommentLikesResponse> {
+        return this.call <ListCommentLikesResponse, ListCommentLikes> (HTTPVerb.GET, 'api/v3/like', form)
     }
     
     listCommentReports(form: ListCommentReports): Promise<ListCommentReportsResponse> {
-        return this.lemmy.listCommentReports(form);
+        return this.call <ListCommentReportsResponse, ListCommentReports> (HTTPVerb.GET, 'api/v3/comment/report/list', form)
     }
 
     listCommunities(form: ListCommunities = {}): Promise<ListCommunitiesResponse> {
-        return this.lemmy.listCommunities(form)
+        return this.call <ListCommunitiesResponse, ListCommunities> (HTTPVerb.GET, 'api/v3/community/list', form)
     }
     
     listLogins(): Promise<LoginToken[]> {
-        return this.lemmy.listLogins();
+        return this.call <LoginToken[]> (HTTPVerb.GET, 'api/v3/user/list_logins')
+    }
+
+    listPostLikes(form: ListPostLikes): Promise<ListPostLikesResponse> {
+        return this.call <ListPostLikesResponse, ListPostLikes> (HTTPVerb.GET, 'api/v3/post/like', form)
     }
 
     listPostReports(form: ListPostReports): Promise<ListPostReportsResponse> {
-        return this.lemmy.listPostReports(form);
+        return this.call <ListPostReportsResponse, ListPostReports> (HTTPVerb.GET, 'api/v3/post/report/list', form)
     }
 
     listPrivateMessageReports(form: ListPrivateMessageReports): Promise<ListPrivateMessageReportsResponse> {
-        return this.lemmy.listPrivateMessageReports(form);
+        return this.call <ListPrivateMessageReportsResponse, ListPrivateMessageReports> (HTTPVerb.GET, 'api/v3/private_message/report/list', form)
     }
 
     listRegistrationApplications(form: ListRegistrationApplications): Promise<ListRegistrationApplicationsResponse> {
-        return this.lemmy.listRegistrationApplications(form);
+        return this.call <ListRegistrationApplicationsResponse, ListRegistrationApplications> (HTTPVerb.GET, 'api/v3/admin/registration_application/list', form)
     }
 
     lockPost(form: LockPost): Promise<PostResponse> {
-        return this.lemmy.lockPost(form);
+        return this.call <PostResponse, LockPost> (HTTPVerb.POST, 'api/v3/post/lock', form)
     }
 
     login(form: Login): Promise<LoginResponse> {
-        return this.lemmy.login(form);
+        return this.call <LoginResponse, Login> (HTTPVerb.POST, 'api/v3/user/login', form)
     }
 
     logout(): Promise<SuccessResponse> {
-        return this.lemmy.logout();
+        return this.call <SuccessResponse> (HTTPVerb.POST, 'api/v3/user/logout')
     }
 
     markAllAsRead(): Promise<GetRepliesResponse> {
-        return this.lemmy.markAllAsRead();
+        return this.call <GetRepliesResponse> (HTTPVerb.POST, 'api/v3/user/mark_all_as_read')
     }
     
     markCommentReplyAsRead(form: MarkCommentReplyAsRead): Promise<CommentReplyResponse> {
-        return this.lemmy.markCommentReplyAsRead(form);
+        return this.call <CommentReplyResponse, MarkCommentReplyAsRead> (HTTPVerb.POST, 'api/v3/comment/mark_as_read', form)
     }
     
     markPersonMentionAsRead(form: MarkPersonMentionAsRead): Promise<PersonMentionResponse> {
-        return this.lemmy.markPersonMentionAsRead(form);
+        return this.call <PersonMentionResponse, MarkPersonMentionAsRead> (HTTPVerb.POST, 'api/v3/user/mention/mark_as_read', form)
     }
     
     markPostAsRead(form: MarkPostAsRead): Promise<SuccessResponse> {
-        return this.lemmy.markPostAsRead(form);
+        return this.call <SuccessResponse, MarkPostAsRead> (HTTPVerb.POST, 'api/v3/post/mark_as_read', form)
     }
 
     markPrivateMessageAsRead(form: MarkPrivateMessageAsRead): Promise<PrivateMessageResponse> {
-        return this.lemmy.markPrivateMessageAsRead(form);
+        return this.call <PrivateMessageResponse, MarkPrivateMessageAsRead> (HTTPVerb.POST, 'api/v3/private_message/mark_as_read', form)
     }
     
     passwordChangeAfterReset(form: PasswordChangeAfterReset): Promise<SuccessResponse> {
-        return this.lemmy.passwordChangeAfterReset(form);
+        return this.call <SuccessResponse, PasswordChangeAfterReset> (HTTPVerb.POST, 'api/v3/user/password_change', form)
     }
     
     passwordReset(form: PasswordReset): Promise<SuccessResponse> {
-        return this.lemmy.passwordReset(form);
+        return this.call <SuccessResponse, PasswordReset> (HTTPVerb.POST, 'api/v3/user/password_reset', form)
     }
 
     purgeComment(form: PurgeComment): Promise<SuccessResponse> {
-        return this.lemmy.purgeComment(form);
+        return this.call <SuccessResponse, PurgeComment> (HTTPVerb.POST, 'api/v3/admin/purge/comment', form)
     }
 
     purgeCommunity(form: PurgeCommunity): Promise<SuccessResponse> {
-        return this.lemmy.purgeCommunity(form);
+        return this.call <SuccessResponse, PurgeCommunity> (HTTPVerb.POST, 'api/v3/admin/purge/community', form)
     }
 
     purgePerson(form: PurgePerson): Promise<SuccessResponse> {
-        return this.lemmy.purgePerson(form);
+        return this.call <SuccessResponse, PurgePerson> (HTTPVerb.POST, 'api/v3/admin/purge/person', form)
     }
 
     purgePost(form: PurgePost): Promise<SuccessResponse> {
-        return this.lemmy.purgePost(form);
+        return this.call <SuccessResponse, PurgePost> (HTTPVerb.POST, 'api/v3/admin/purge/post', form)
     }
 
     register(form: Register): Promise<LoginResponse> {
-        return this.lemmy.register(form)
+        return this.call <LoginResponse, Register> (HTTPVerb.POST, 'api/v3/user/register', form)
     }
 
     removeComment(form: RemoveComment): Promise<CommentResponse> {
-        return this.lemmy.removeComment(form);
+        return this.call <CommentResponse, RemoveComment> (HTTPVerb.POST, 'api/v3/comment/remove', form)
     }
 
     removeCommunity(form: RemoveCommunity): Promise<CommunityResponse> {
-        return this.lemmy.removeCommunity(form);
+        return this.call <CommunityResponse, RemoveCommunity> (HTTPVerb.POST, 'api/v3/community/remove', form)
     }
    
     removePost(form: RemovePost): Promise<PostResponse> {
-        return this.lemmy.removePost(form);
+        return this.call <PostResponse, RemovePost> (HTTPVerb.POST, 'api/v3/post/remove', form)
     }
 
     resolveCommentReport(form: ResolveCommentReport): Promise<CommentReportResponse> {
-        return this.lemmy.resolveCommentReport(form);
+        return this.call <CommentReportResponse, ResolveCommentReport> (HTTPVerb.PUT, 'api/v3/comment/report/resolve', form)
     }
 
     resolveObject(form: ResolveObject): Promise<ResolveObjectResponse> {
-        return this.lemmy.resolveObject(form);
+        return this.call <ResolveObjectResponse, ResolveObject> (HTTPVerb.GET, 'api/v3/resolve_object', form)
     }
 
     resolvePostReport(form: ResolvePostReport): Promise<PostReportResponse> {
-        return this.lemmy.resolvePostReport(form);
+        return this.call <PostReportResponse, ResolvePostReport> (HTTPVerb.PUT, 'api/v3/post/report/resolve', form)
     }
 
     resolvePrivateMessageReport(form: ResolvePrivateMessageReport): Promise<PrivateMessageReportResponse> {
-        return this.lemmy.resolvePrivateMessageReport(form);
+        return this.call <PrivateMessageReportResponse, ResolvePrivateMessageReport> (HTTPVerb.PUT, 'api/v3/private_message/report/resolve', form)
     }
     
     saveComment(form: SaveComment): Promise<CommentResponse> {
-        return this.lemmy.saveComment(form);
+        return this.call <CommentResponse, SaveComment> (HTTPVerb.PUT, 'api/v3/comment/save', form)
     }
     
     savePost(form: SavePost): Promise<PostResponse> {
-        return this.lemmy.savePost(form);
+        return this.call <PostResponse, SavePost> (HTTPVerb.PUT, 'api/v3/post/save', form)
     }
 
     saveUserSettings(form: SaveUserSettings): Promise<SuccessResponse> {
-        return this.lemmy.saveUserSettings(form);
+        return this.call <SuccessResponse, SaveUserSettings> (HTTPVerb.PUT, 'api/v3/user/save_user_settings', form)
     }
 
     search(form: Search): Promise<SearchResponse> {
-        return this.lemmy.search(form);
+        return this.call <SearchResponse, Search> (HTTPVerb.GET, 'api/v3/search', form)
     }
 
     /**
@@ -696,27 +692,57 @@ export class SublinksClient {
     }
 
     setHeaders(headers: { [key: string]: string }): void {
-        this.lemmy.setHeaders(headers)
+        this.headers = headers
     }
     
     transferCommunity(form: TransferCommunity): Promise<GetCommunityResponse> {
-        return this.lemmy.transferCommunity(form);
+        return this.call <GetCommunityResponse, TransferCommunity> (HTTPVerb.POST, 'api/v3/community/transfer', form)
     }
     
     updateTotp(form: UpdateTotp): Promise<UpdateTotpResponse> {
-        return this.lemmy.updateTotp(form);
+        return this.call <UpdateTotpResponse, UpdateTotp> (HTTPVerb.POST, 'api/v3/user/totp/update', form)
     }
 
-    uploadImage({ image }: UploadImage): Promise<UploadImageResponse> {
-        return this.lemmy.uploadImage({image});
+    async uploadImage({ image }: UploadImage): Promise<UploadImageResponse> {
+        const pictrsEndpoint = this.baseURL + '/pictrs/image'
+
+        const imageData = new FormData();
+        imageData.append("images[]", new Blob([image]), "dummy.png")
+    
+        const response = await this.fetchFunction(pictrsEndpoint, {
+          method: 'POST',
+          body: imageData,
+          headers: this.headers,
+        });
+    
+        if (response.status === 413) {
+            return { msg: "Image is too large" };
+        }
+    
+        if (!response.ok) {
+            return { msg: `Upload Error: ${(await response.json()).msg}`}
+        }
+
+        const responseJson = await response.json();
+    
+        let url: string | undefined = undefined;
+        let delete_url: string | undefined = undefined;
+
+        if (responseJson.msg === "ok") {
+          const { file: hash, delete_token: deleteToken } = responseJson.files[0];
+          delete_url = `${pictrsEndpoint}/delete/${deleteToken}/${hash}`;
+          url = `${pictrsEndpoint}/${hash}`;
+        }
+    
+        return { ...responseJson, url, delete_url, };
     }
 
     validateAuth(): Promise<SuccessResponse> {
-        return this.lemmy.validateAuth();
+        return this.call <SuccessResponse> (HTTPVerb.GET, 'api/v3/user/validate_auth')
     }
 
     verifyEmail(form: VerifyEmail): Promise<SuccessResponse> {
-        return this.lemmy.verifyEmail(form);
+        return this.call <SuccessResponse, VerifyEmail> (HTTPVerb.POST, 'api/v3/user/verify_email', form)
     }
 
 

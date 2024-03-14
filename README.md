@@ -16,15 +16,7 @@ This client may also gain additional convenience methods for the Lemmy JS client
 ### Client API Documentation
 The documentation is generated with TypeDoc and is available [here](https://sublinks.org/sublinks-js-client/).
 
-There are 3 ways to use the library:
-1) Use the universal client: `SublinksClient` 
-2) Use the native client: `SublinksHttp`
-3) Use the Lemmy-only client: `LemmyHttp`
-
-It is recommended to use the universal client to take advantage of the compatibility API so that applications can slowly transition to the native API as it matures.
-
-
-### Example (Lemmy Compatibility API)
+### Example
 
 ```Javascript
 import { 
@@ -55,27 +47,6 @@ if (site?.my_user) console.log("Successfully logged in");
 else console.log("Login was unsuccessful");
 ```
 
-### Example (Native API)
-The native API is accessed the same way as the compatibility API from the same client class. During the compatibility phase, you will need to refer to the API documentation or the client's typedocs to determine which methods belong to which API.
-
-
-
-```Javascript
-import { SublinksClient } from 'sublinks-js-client'
-
-const client = new SublinksClient('sublinks.example.com');
-
-let version = await client.APIVersion()
-
-console.log(version);
-
-/* Output
-{
-    success: true,
-    message: '1.0.0'
-}
-*/
-```
 
 ### Caching
 By default, certain getters cache responses from the API.  This caching is, optionally, performed transparently when calling the following methods.  You can specify an additional parameter of type CacheOptions to fine-tune the cache behavior on a method-by-method basis.
