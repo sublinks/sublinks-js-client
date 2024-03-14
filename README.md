@@ -54,7 +54,7 @@ authenticated methods to work with both auth schemes (form param in 0.18.x and a
 
 Only use this option if you *must* support 0.18.x.  Consider either calling getSite() and re-initializing the client with compatibility mode if needed or reading this value from an environment variable.
 
-```javascript
+```typescript
 import { 
     type GetSiteResponse,
     SublinksClient 
@@ -67,7 +67,7 @@ const client = new SublinksClient('sublinks.example.com', {compatible18: true});
 
 // Alternatively, dynamically detect if it needs to use compatibility mode
 const client = new SublinksClient('sublinks.example.com');
-const site = await client.getSite({useCache: false});   // Don't cache the test lookup
+site = await client.getSite({useCache: false});   // Don't cache the test lookup
 if (site?.version.startsWith('0.18.')) client.compatible18 = true
 
 
