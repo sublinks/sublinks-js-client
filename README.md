@@ -48,11 +48,13 @@ else console.log("Login was unsuccessful");
 ### Compatibility Mode for 0.18.x
 If you need to target 0.18.x with this library, you will need to supply `compatible18: true` in the client constructor options or call `client.compatible18=true` after initialization.
 
-All this does is extract the JWT from the client's internal headers and add it to the `form` object when making API requests.  It will not prevent API calls to unsupported endpoints.
-Additionally, it does not backport any type definition differences, so you may have to ignore or fix those in client code.  The compatibility mode is simply to allow
-authenticated methods to work with both auth schemes (form param in 0.18.x and auth header in 0.19.0+).
+All this does is tell the library to extract the JWT from the client's internal headers and add it to the `form` object when making API requests.  It *will not* prevent API calls to unsupported endpoints.  Those will just return a 400.
 
-Only use this option if you *must* support 0.18.x.  Consider either calling getSite() and re-initializing the client with compatibility mode if needed or reading this value from an environment variable.
+Additionally, it does not backport any type definition differences, so you may have to ignore or extend those types in your client code.  The compatibility mode is simply to allow
+authenticated methods to work with both auth schemes (body/URL param in 0.18.x and auth header in 0.19.0+).
+
+Only use this option if you *must* support 0.18.x.  Rather than explicitly creating an 0.18.x client, it is recommended
+to call `getSite()` and check the version returned.  If it's 0.18.x then set compatibility mode to true.
 
 ```typescript
 import { 
