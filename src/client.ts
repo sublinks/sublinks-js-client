@@ -213,8 +213,6 @@ export class SublinksClient {
         let response: Response 
         let json: any
         
-        console.log(`Calling ${method} - ${url}`)
-        
         try {
             if (method == HTTPVerb.GET) {
                 if (form) {
@@ -224,7 +222,7 @@ export class SublinksClient {
                         url.searchParams.set(key, value)
                     })
                 }
-                console.log(url)
+
                 response = await this.fetchFunction(url, {
                     method: HTTPVerb[method],
                     headers: this.headers,
