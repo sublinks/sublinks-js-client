@@ -150,10 +150,10 @@ const client = new SublinksClient('sublinks.example.com', {cacheTime: 60});
 const site = await client.getSite()     
 
 // Lookup a community but store it in cache longer than the default TTL
-const community = await client.getCommunity({name: 'test@example.com'}, {cacheTime:600})
+const community = await client.getCommunity({name: 'test@example.com'}, {duration:600})
 
 // Lookup a person but perform a fresh API call before storing and returning the response
-const person = await client.getPersonDetails({person_id:5}, {invalidate: true, cacheTime: 120})
+const person = await client.getPersonDetails({person_id:5}, {invalidate: true, duration: 120})
 
 // Lookup a person but do not cache the result
 const person = await client.getPersonDetails({username:'bob@example.com'}, {useCache: false})
@@ -164,7 +164,7 @@ const person = await client.getPersonDetails({username:'bob@example.com'}, {useC
 const clientNoCache = new SublinksClient('sublinks.example.com', {useCache: false})
 
 // Use caching on this request even if caching is disabled at the client level
-const person2 = await clientNoCache.getPersonDetails({username:'bob@example.com'}, {useCache: true, cacheTime: 120})
+const person2 = await clientNoCache.getPersonDetails({username:'bob@example.com'}, {useCache: true, duration: 120})
 
 // Flush the cache
 client.cache.flush()
