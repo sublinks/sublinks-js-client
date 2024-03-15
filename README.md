@@ -100,6 +100,23 @@ else console.log("Login was unsuccessful");
 
 ```
 
+### Using a Custom Fetch Function (e.g. cross-fetch)
+As of version 0.0.11, `cross-fetch` has has been removed from the library in favor of using native fetch functions and eliminating external dependencies.  If you need to use a custom fetch function or want to use `cross-fetch`, you can still do so by passing a custom fetch function into the client constructor in your application.
+
+In this example, I'm renaming the imported `fetch` function only for clarity. In practice, you do not need to do that.
+
+```typescript
+import { fetch as crossFetch} from 'cross-fetch'
+
+const client = new SublinksClient('sublinks.example.com', {fetchFunction: crossFetch});
+
+// Alternate method
+const client = new SublinksClient('sublinks.example.com')
+client.fetchFunction = crossFetch
+
+// The rest of the code works the same
+
+```
 
 ### Caching
 By default, certain getters cache responses from the API.  This caching is, optionally, performed transparently when calling the following methods.  You can specify an additional parameter of type CacheOptions to fine-tune the cache behavior on a method-by-method basis.
