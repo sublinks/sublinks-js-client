@@ -62,7 +62,7 @@ to call `getSite()` and check the version returned.  If it's 0.18.x then change 
 
 **Note 2**:  If you don't want to maintain explicit 0.18.x compatibility in your exisitng client, you can remove any `auth` keys in the form data of your method calls to the old `lemmy-js-client`.  Once you set the auth header with `setAuth()`, it will keep the token in the client and add it automatically.
 
-Both of those aspects of the library can be used so that `sublinks-js-client` can also act as a bridge for an 0.18.x client to slowly adopt 0.19.x features.
+Both of those aspects of the library can be used so that `sublinks-js-client` can also act as a bridge for an 0.18.x client to slowly adopt 0.19.x features / transition to the Sublinks native API.
 
 ```typescript
 import { 
