@@ -243,12 +243,7 @@ export class SublinksClient {
                 });
             }
 
-            if (response.ok) {
-                json = await response.json();
-            }
-            else {
-                throw new Error(response.statusText ?? "Bad API response");
-            }
+            json = await response.json();
         }
 
         catch (err) {
