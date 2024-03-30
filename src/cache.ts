@@ -1,6 +1,6 @@
 import type { CacheOptions } from './types/argumentTypes/CacheOptions'
 
-interface FetchCacheStore {
+export interface FetchCacheStore {
     
     [key: string]: {    
         timestamp: number,

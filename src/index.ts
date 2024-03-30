@@ -6,3 +6,4 @@ export { StatusResponse } from './types/StatusResponse'
 
 export * from './types/lemmy/index'
 export * from './client'
+export * from './cache'

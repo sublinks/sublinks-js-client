@@ -5,7 +5,7 @@ import { HttpClientConstructorOptions } from './types/HttpClientConstructorOptio
 import { FetchCache } from './cache'
 //import { fetch } from 'cross-fetch'
 
-enum HTTP {
+export enum HTTP {
     GET,
     POST,
     PUT,

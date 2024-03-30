@@ -47,6 +47,7 @@ export { CommunityId } from "./CommunityId";
 export { CommunityModeratorView } from "./CommunityModeratorView";
 export { CommunityResponse } from "./CommunityResponse";
 export { CommunityView } from "./CommunityView";
+export { CommunityVisibility } from "./CommunityVisibility"
 export { CreateComment } from "./CreateComment";
 export { CreateCommentLike } from "./CreateCommentLike";
 export { CreateCommentReport } from "./CreateCommentReport";
@@ -116,6 +117,7 @@ export { InstanceWithFederationState } from "./InstanceWithFederationState";
 export { Language } from "./Language";
 export { LanguageId } from "./LanguageId";
 export { LemmyErrorType } from "./LemmyErrorType";
+export { LinkMetadata } from './LinkMetadata'
 export { ListCommentLikes } from './ListCommentLikes';
 export { ListCommentLikesResponse } from './ListCommentLikesResponse';
 export { ListCommentReports } from "./ListCommentReports";
@@ -134,6 +136,8 @@ export { ListingType } from "./ListingType";
 export { LocalSite } from "./LocalSite";
 export { LocalSiteId } from "./LocalSiteId";
 export { LocalSiteRateLimit } from "./LocalSiteRateLimit";
+export { LocalSiteUrlBlocklist } from './LocalSiteUrlBlocklist'
+export { LocalUserVoteDisplayMode } from './LocalUserVoteDisplayMode'
 export { LocalUser } from "./LocalUser";
 export { LocalUserId } from "./LocalUserId";
 export { LocalUserView } from "./LocalUserView";
@@ -240,4 +244,5 @@ export { TransferCommunity } from "./TransferCommunity";
 export { UpdateTotp } from "./UpdateTotp";
 export { UpdateTotpResponse } from "./UpdateTotpResponse";
 export { VerifyEmail } from "./VerifyEmail";
+export { VoteView } from './VoteView'
 export { UploadImage, UploadImageResponse, ImageFile, DeleteImage, } from "./other_types";
