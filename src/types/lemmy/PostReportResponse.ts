@@ -2,6 +2,6 @@ import type { PostReportView } from "./PostReportView";
 
 export interface PostReportResponse {
   post_report_view: PostReportView,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

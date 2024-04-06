@@ -11,6 +11,6 @@ export interface GetPersonDetailsResponse {
   comments: Array<CommentView>,
   posts: Array<PostView>,
   moderates: Array<CommunityModeratorView>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

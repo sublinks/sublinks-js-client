@@ -8,6 +8,6 @@ export interface GetPostResponse {
   community_view: CommunityView,
   moderators: Array<CommunityModeratorView>,
   cross_posts: Array<PostView>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

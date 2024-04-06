@@ -2,6 +2,6 @@ import type { VoteView } from "./VoteView";
 
 export interface ListCommentLikesResponse {
   comment_likes: Array<VoteView>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

@@ -31,6 +31,6 @@ export interface GetModlogResponse {
   admin_purged_posts: Array<AdminPurgePostView>,
   admin_purged_comments: Array<AdminPurgeCommentView>,
   hidden_communities: Array<ModHideCommunityView>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

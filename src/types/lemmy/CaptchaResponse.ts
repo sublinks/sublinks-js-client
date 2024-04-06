@@ -4,6 +4,6 @@ export interface CaptchaResponse {
   png: string,
   wav: string,
   uuid: string,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

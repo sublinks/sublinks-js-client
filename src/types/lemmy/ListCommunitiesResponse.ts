@@ -2,6 +2,6 @@ import type { CommunityView } from "./CommunityView";
 
 export interface ListCommunitiesResponse {
   communities: Array<CommunityView>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

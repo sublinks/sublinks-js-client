@@ -1,5 +1,5 @@
 export interface SuccessResponse {
   success: boolean,
-  error?: string,
+  errors?: string[],
   message?: string,
 }
