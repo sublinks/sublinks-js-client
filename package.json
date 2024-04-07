@@ -1,6 +1,6 @@
 {
     "name": "sublinks-js-client",
-    "version": "0.0.16",
+    "version": "0.0.17",
     "description": "JavaScript/TypeScript client for Sublinks",
     "repository": "https://github.com/sublinks/sublinks-js-client",
     "license": "MIT",

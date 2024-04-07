@@ -519,7 +519,7 @@ export class SublinksClient {
     }
 
     listCommentLikes(form: ListCommentLikes): Promise<ListCommentLikesResponse> {
-        return this.call <ListCommentLikesResponse, ListCommentLikes> (HTTP.GET, 'api/v3/like', form)
+        return this.call <ListCommentLikesResponse, ListCommentLikes> (HTTP.GET, 'api/v3/like/list', form)
     }
     
     listCommentReports(form: ListCommentReports): Promise<ListCommentReportsResponse> {
@@ -535,7 +535,7 @@ export class SublinksClient {
     }
 
     listPostLikes(form: ListPostLikes): Promise<ListPostLikesResponse> {
-        return this.call <ListPostLikesResponse, ListPostLikes> (HTTP.GET, 'api/v3/post/like', form)
+        return this.call <ListPostLikesResponse, ListPostLikes> (HTTP.GET, 'api/v3/post/like/list', form)
     }
 
     listPostReports(form: ListPostReports): Promise<ListPostReportsResponse> {
