@@ -3,6 +3,6 @@ import type { LinkMetadata } from "./LinkMetadata";
 
 export interface GetSiteMetadataResponse {
   metadata: LinkMetadata,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

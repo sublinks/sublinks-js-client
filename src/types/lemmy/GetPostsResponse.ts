@@ -4,6 +4,6 @@ import type { PostView } from "./PostView";
 export interface GetPostsResponse {
   posts: Array<PostView>,
   next_page?: PaginationCursor,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

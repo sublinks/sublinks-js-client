@@ -1,5 +1,5 @@
 export interface GetUnreadRegistrationApplicationCountResponse {
   registration_applications: /* integer */ number,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

@@ -2,6 +2,6 @@
 
 export interface BlockInstanceResponse {
   blocked: boolean,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

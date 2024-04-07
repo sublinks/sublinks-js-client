@@ -9,6 +9,6 @@ export interface GetCommunityResponse {
   site?: Site,
   moderators: Array<CommunityModeratorView>,
   discussion_languages: Array<LanguageId>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

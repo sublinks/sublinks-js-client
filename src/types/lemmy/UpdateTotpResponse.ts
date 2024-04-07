@@ -1,5 +1,5 @@
 export interface UpdateTotpResponse {
   enabled: boolean,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

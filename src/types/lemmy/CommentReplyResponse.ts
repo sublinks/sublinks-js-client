@@ -3,6 +3,6 @@ import type { CommentReplyView } from "./CommentReplyView";
 
 export interface CommentReplyResponse {
   comment_reply_view: CommentReplyView,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

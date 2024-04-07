@@ -8,6 +8,6 @@ export interface ResolveObjectResponse {
   post?: PostView,
   community?: CommunityView,
   person?: PersonView,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

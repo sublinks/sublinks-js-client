@@ -6,6 +6,6 @@ export interface GetReportCountResponse {
   comment_reports: /* integer */ number,
   post_reports: /* integer */ number,
   private_message_reports?: /* integer */ number,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

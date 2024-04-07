@@ -5,6 +5,6 @@ import type { LocalUserId } from "./LocalUserId";
 export interface CommentResponse {
   comment_view: CommentView,
   recipient_ids: Array<LocalUserId>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

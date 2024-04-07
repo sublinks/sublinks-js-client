@@ -10,6 +10,6 @@ export interface SearchResponse {
   posts: Array<PostView>,
   communities: Array<CommunityView>,
   users: Array<PersonView>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }

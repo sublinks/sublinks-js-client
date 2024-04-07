@@ -17,6 +17,6 @@ export interface GetSiteResponse {
   taglines: Array<Tagline>,
   custom_emojis: Array<CustomEmojiView>,
   blocked_urls: Array<LocalSiteUrlBlocklist>,
-  error?: string,
+  errors?: string[],
   message?: string,
 }
