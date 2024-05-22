@@ -10,4 +10,5 @@ export interface GetPostResponse {
   cross_posts: Array<PostView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

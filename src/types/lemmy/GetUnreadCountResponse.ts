@@ -4,4 +4,5 @@ export interface GetUnreadCountResponse {
   private_messages: /* integer */ number,
   errors?: string[],
   message?: string,
+  status?: string,
 }

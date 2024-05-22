@@ -12,4 +12,5 @@ export interface SearchResponse {
   users: Array<PersonView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

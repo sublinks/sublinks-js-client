@@ -3,5 +3,6 @@ export interface LoginResponse {
   registration_created: boolean,
   verify_email_sent: boolean,
   errors?: string[],
-  message?: string
+  message?: string,
+  status?: string,
 }

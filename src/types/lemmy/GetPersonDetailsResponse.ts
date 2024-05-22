@@ -13,4 +13,5 @@ export interface GetPersonDetailsResponse {
   moderates: Array<CommunityModeratorView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

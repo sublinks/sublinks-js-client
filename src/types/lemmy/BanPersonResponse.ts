@@ -6,4 +6,5 @@ export interface BanPersonResponse {
   banned: boolean,
   errors?: string[],
   message?: string,
+  status?: string,
 }

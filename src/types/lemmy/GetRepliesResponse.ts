@@ -4,4 +4,5 @@ export interface GetRepliesResponse {
   replies: Array<CommentReplyView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

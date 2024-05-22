@@ -4,4 +4,5 @@ export interface PrivateMessagesResponse {
   private_messages: Array<PrivateMessageView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

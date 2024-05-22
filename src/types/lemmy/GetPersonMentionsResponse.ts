@@ -5,4 +5,5 @@ export interface GetPersonMentionsResponse {
   mentions: Array<PersonMentionView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

@@ -4,4 +4,5 @@ export interface ListCommentLikesResponse {
   comment_likes: Array<VoteView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

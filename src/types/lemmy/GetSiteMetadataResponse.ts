@@ -5,4 +5,5 @@ export interface GetSiteMetadataResponse {
   metadata: LinkMetadata,
   errors?: string[],
   message?: string,
+  status?: string,
 }

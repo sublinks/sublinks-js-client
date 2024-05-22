@@ -7,4 +7,5 @@ export interface CommentResponse {
   recipient_ids: Array<LocalUserId>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

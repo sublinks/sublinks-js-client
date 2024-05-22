@@ -33,4 +33,5 @@ export interface GetModlogResponse {
   hidden_communities: Array<ModHideCommunityView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }
