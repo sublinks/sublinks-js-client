@@ -6,6 +6,5 @@ export interface BanFromCommunityResponse {
   banned: boolean,
   errors?: string[],
   message?: string,
-  status?: string,,
   status?: string,
 }
