@@ -6,4 +6,5 @@ export interface GetPostsResponse {
   next_page?: PaginationCursor,
   errors?: string[],
   message?: string,
+  status?: string,
 }

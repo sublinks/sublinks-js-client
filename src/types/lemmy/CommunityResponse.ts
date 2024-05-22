@@ -7,4 +7,5 @@ export interface CommunityResponse {
   discussion_languages: Array<LanguageId>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

@@ -11,4 +11,5 @@ export interface GetCommunityResponse {
   discussion_languages: Array<LanguageId>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

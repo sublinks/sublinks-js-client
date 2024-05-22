@@ -6,4 +6,5 @@ export interface CaptchaResponse {
   uuid: string,
   errors?: string[],
   message?: string,
+  status?: string,
 }

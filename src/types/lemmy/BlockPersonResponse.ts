@@ -6,4 +6,5 @@ export interface BlockPersonResponse {
   blocked: boolean,
   errors?: string[],
   message?: string,
+  status?: string,
 }

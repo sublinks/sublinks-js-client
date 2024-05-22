@@ -10,4 +10,5 @@ export interface ResolveObjectResponse {
   person?: PersonView,
   errors?: string[],
   message?: string,
+  status?: string,
 }

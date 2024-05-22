@@ -8,4 +8,5 @@ export interface GetReportCountResponse {
   private_message_reports?: /* integer */ number,
   errors?: string[],
   message?: string,
+  status?: string,
 }

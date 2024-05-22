@@ -19,4 +19,5 @@ export interface GetSiteResponse {
   blocked_urls: Array<LocalSiteUrlBlocklist>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

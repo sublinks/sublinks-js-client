@@ -4,4 +4,5 @@ export interface ListPostLikesResponse {
   post_likes: Array<VoteView>,
   errors?: string[],
   message?: string,
+  status?: string,
 }

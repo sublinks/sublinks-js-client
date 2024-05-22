@@ -5,4 +5,5 @@ export interface GetCaptchaResponse {
   ok?: CaptchaResponse,
   errors?: string[],
   message?: string,
+  status?: string,
 }
